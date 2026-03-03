@@ -2436,6 +2436,111 @@
         .main-content.visible {
             display: block;
         }
+
+        /* Share Modal */
+        .share-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1099;
+        }
+
+        .share-modal-overlay.active {
+            display: block;
+        }
+
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #282828;
+            border-radius: 12px;
+            padding: 28px;
+            z-index: 1100;
+            width: 440px;
+            max-width: 90vw;
+        }
+
+        .share-modal.active {
+            display: block;
+        }
+
+        .share-modal h4 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .share-modal-description {
+            color: #a0a0a0;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .share-modal-filters {
+            background: #1a1a1a;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 16px;
+        }
+
+        .share-modal-url {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .share-modal-url input {
+            flex: 1;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+        }
+
+        .share-modal-url button {
+            padding: 12px 20px;
+            background: #FF6B00;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-modal-url button:hover {
+            background: #ff8533;
+        }
+
+        .share-modal-btns {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .share-modal-close {
+            padding: 10px 24px;
+            background: #333;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .share-modal-close:hover {
+            background: #444;
+        }
     </style>
 </head>
 <body>
@@ -2916,6 +3021,12 @@
             <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
         Link copied to clipboard!
+    </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal-overlay" id="shareModalOverlay" onclick="closeShareModal()"></div>
+    <div class="share-modal" id="shareModal">
+        <div id="shareModalContent"></div>
     </div>
 
     <!-- Refresh Toast -->
@@ -4644,19 +4755,31 @@
         }
 
         function shareView() {
-            const url = new URL(window.location.href);
+            // Check if there's anything to share
+            const hasFilters = activeFilters.sentiment.length || activeFilters.region.length ||
+                              activeFilters.country.length || activeFilters.prTeam.length ||
+                              activeFilters.lead.length || activeFilters.search;
+            const hasHidden = hiddenRecords.size > 0;
 
-            // Clear existing params
-            url.search = '';
+            if (!hasFilters && !hasHidden) {
+                // Show modal explaining nothing to share
+                showShareModal(null, false);
+                return;
+            }
+
+            const url = new URL(window.location.href.split('?')[0]);
 
             if (hiddenRecords.size > 0) {
-                // Encode hidden records as base64 for shorter URL
+                // Encode hidden records as URL-safe base64
                 const hiddenArray = Array.from(hiddenRecords);
-                const encoded = btoa(JSON.stringify(hiddenArray));
+                const encoded = btoa(JSON.stringify(hiddenArray))
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/, '');
                 url.searchParams.set('hidden', encoded);
             }
 
-            // Also encode active filters
+            // Encode active filters
             if (activeFilters.sentiment.length) {
                 url.searchParams.set('sentiment', activeFilters.sentiment.join(','));
             }
@@ -4669,15 +4792,76 @@
             if (activeFilters.prTeam.length) {
                 url.searchParams.set('prTeam', activeFilters.prTeam.join(','));
             }
+            if (activeFilters.lead.length) {
+                url.searchParams.set('lead', activeFilters.lead.join(','));
+            }
 
-            // Copy to clipboard
-            navigator.clipboard.writeText(url.toString()).then(() => {
-                const toast = document.getElementById('shareToast');
-                toast.classList.add('active');
+            showShareModal(url.toString(), true);
+        }
+
+        function showShareModal(shareUrl, hasContent) {
+            const visibleCount = allEvents.length - hiddenRecords.size;
+            const filterSummary = getFilterSummary();
+
+            let modalContent = '';
+            if (hasContent) {
+                modalContent = `
+                    <h4>Share This View</h4>
+                    <p class="share-modal-description">Share your current calendar view with others. They'll see the same ${visibleCount} events with your applied filters.</p>
+                    ${filterSummary ? `<div class="share-modal-filters"><strong>Active filters:</strong> ${filterSummary}</div>` : ''}
+                    <div class="share-modal-url">
+                        <input type="text" id="shareUrlInput" value="${shareUrl}" readonly onclick="this.select()">
+                        <button onclick="copyShareUrl()">Copy</button>
+                    </div>
+                    <div class="share-modal-btns">
+                        <button class="share-modal-close" onclick="closeShareModal()">Done</button>
+                    </div>
+                `;
+            } else {
+                modalContent = `
+                    <h4>Nothing to Share</h4>
+                    <p class="share-modal-description">Apply filters or hide events using Custom Views to create a shareable view.</p>
+                    <div class="share-modal-btns">
+                        <button class="share-modal-close" onclick="closeShareModal()">Got it</button>
+                    </div>
+                `;
+            }
+
+            document.getElementById('shareModalContent').innerHTML = modalContent;
+            document.getElementById('shareModalOverlay').classList.add('active');
+            document.getElementById('shareModal').classList.add('active');
+
+            if (hasContent) {
+                document.getElementById('shareUrlInput').select();
+            }
+        }
+
+        function getFilterSummary() {
+            const parts = [];
+            if (activeFilters.sentiment.length) parts.push(`Sentiment: ${activeFilters.sentiment.join(', ')}`);
+            if (activeFilters.region.length) parts.push(`Region: ${activeFilters.region.join(', ')}`);
+            if (activeFilters.lead.length) parts.push(`Lead: ${activeFilters.lead.join(', ')}`);
+            if (hiddenRecords.size > 0) parts.push(`${hiddenRecords.size} events hidden`);
+            return parts.join(' • ');
+        }
+
+        function copyShareUrl() {
+            const input = document.getElementById('shareUrlInput');
+            input.select();
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = input.nextElementSibling;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#1DB954';
                 setTimeout(() => {
-                    toast.classList.remove('active');
-                }, 3000);
+                    btn.textContent = 'Copy';
+                    btn.style.background = '';
+                }, 2000);
             });
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModalOverlay').classList.remove('active');
+            document.getElementById('shareModal').classList.remove('active');
         }
 
         function loadSharedView() {
@@ -4686,7 +4870,15 @@
             // Load hidden records
             if (params.has('hidden')) {
                 try {
-                    const decoded = JSON.parse(atob(params.get('hidden')));
+                    // Decode URL-safe base64
+                    let encoded = params.get('hidden')
+                        .replace(/-/g, '+')
+                        .replace(/_/g, '/');
+                    // Add padding if needed
+                    while (encoded.length % 4) {
+                        encoded += '=';
+                    }
+                    const decoded = JSON.parse(atob(encoded));
                     hiddenRecords = new Set(decoded);
                     isSharedView = true;
                 } catch (e) {
@@ -4697,15 +4889,23 @@
             // Load filters
             if (params.has('sentiment')) {
                 activeFilters.sentiment = params.get('sentiment').split(',');
+                isSharedView = true;
             }
             if (params.has('region')) {
                 activeFilters.region = params.get('region').split(',');
+                isSharedView = true;
             }
             if (params.has('country')) {
                 activeFilters.country = params.get('country').split(',');
+                isSharedView = true;
             }
             if (params.has('prTeam')) {
                 activeFilters.prTeam = params.get('prTeam').split(',');
+                isSharedView = true;
+            }
+            if (params.has('lead')) {
+                activeFilters.lead = params.get('lead').split(',');
+                isSharedView = true;
             }
 
             // Show banner if shared view and navigate to current month
@@ -4725,13 +4925,16 @@
             banner.className = 'shared-view-banner';
             banner.id = 'sharedViewBanner';
             banner.innerHTML = `
-                <span>📋 You're viewing a customized calendar with ${allEvents.length - hiddenRecords.size} of ${allEvents.length} events selected</span>
+                <span>You're viewing a shared calendar with ${allEvents.length - hiddenRecords.size} of ${allEvents.length} events</span>
                 <div>
-                    <button class="add-to-views" onclick="addSharedViewToSaved()">+ Add to My Views</button>
+                    <button class="add-to-views" onclick="addSharedViewToSaved()">+ Save to My Views</button>
                     <button onclick="clearSharedView()">View All Events</button>
                 </div>
             `;
-            document.body.insertBefore(banner, document.body.firstChild);
+            // Insert banner inside main-content, before the header
+            const mainContent = document.getElementById('mainContent');
+            const header = mainContent.querySelector('.header');
+            mainContent.insertBefore(banner, header);
         }
 
         function clearSharedView() {

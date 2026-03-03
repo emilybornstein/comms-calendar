@@ -2053,6 +2053,51 @@
             background: rgba(0,0,0,0.3);
         }
 
+        /* Active View Banner */
+        .active-view-banner {
+            background: #1a1a1a;
+            border-bottom: 1px solid #282828;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .active-view-banner .view-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .active-view-banner .view-name svg {
+            color: #FF6B00;
+        }
+
+        .active-view-banner .view-label {
+            color: #888;
+            font-weight: 400;
+        }
+
+        .active-view-banner button {
+            background: #282828;
+            border: 1px solid #404040;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .active-view-banner button:hover {
+            background: #333;
+            border-color: #FF6B00;
+        }
+
         /* Present Mode */
         body.present-mode .header {
             display: none;
@@ -2395,6 +2440,19 @@
             </svg>
             Exit Present Mode
         </button>
+    </div>
+
+    <!-- Active View Banner -->
+    <div class="active-view-banner" id="activeViewBanner" style="display: none;">
+        <div class="view-name">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="view-label">Viewing:</span>
+            <span id="activeViewName">Custom View</span>
+        </div>
+        <button onclick="clearActiveView()">Show All Events</button>
     </div>
 
     <div class="main-container">
@@ -4172,12 +4230,31 @@
             if (!view) return;
 
             hiddenRecords = new Set(view.hiddenRecords || []);
-            activeFilters = { ...view.filters } || { sentiment: [], region: [], country: [], prTeam: [], search: '' };
+            activeFilters = { ...view.filters } || { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
 
             // Update filter UI
             document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
 
+            // Show active view banner
+            document.getElementById('activeViewName').textContent = view.name;
+            document.getElementById('activeViewBanner').style.display = 'flex';
+
             toggleCustomizePanel(); // Close the panel
+            applyFilters();
+        }
+
+        function clearActiveView() {
+            // Reset to show all events
+            hiddenRecords.clear();
+            activeFilters = { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
+
+            // Update filter UI
+            document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
+            document.getElementById('searchInput').value = '';
+
+            // Hide active view banner
+            document.getElementById('activeViewBanner').style.display = 'none';
+
             applyFilters();
         }
 

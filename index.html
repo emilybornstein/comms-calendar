@@ -354,37 +354,31 @@
         /* Main Layout */
         .main-container {
             display: flex;
+            flex-direction: column;
             height: calc(100vh - 65px);
             overflow: hidden;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
+        /* Filter Bar (replaces sidebar) */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
             background: #0f0f0f;
-            border-right: 1px solid #1a1a1a;
-            padding: 20px;
-            overflow-y: auto;
+            border-bottom: 1px solid #1a1a1a;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar-search {
+            position: relative;
+            width: 240px;
             flex-shrink: 0;
         }
 
-        .sidebar-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 24px;
-        }
-
-        .search-box input {
+        .filter-bar-search input {
             width: 100%;
-            padding: 10px 12px 10px 36px;
+            padding: 8px 12px 8px 36px;
             background: #1a1a1a;
             border: 1px solid #333;
             border-radius: 6px;
@@ -392,16 +386,16 @@
             font-size: 13px;
         }
 
-        .search-box input::placeholder {
+        .filter-bar-search input::placeholder {
             color: #666;
         }
 
-        .search-box input:focus {
+        .filter-bar-search input:focus {
             outline: none;
             border-color: #FF6B00;
         }
 
-        .search-box svg {
+        .filter-bar-search svg {
             position: absolute;
             left: 12px;
             top: 50%;
@@ -411,23 +405,249 @@
             color: #666;
         }
 
-        .filter-section {
-            margin-bottom: 24px;
+        .add-filter-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #1a1a1a;
+            border: 1px dashed #444;
+            border-radius: 6px;
+            color: #888;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
         }
 
-        .filter-section-title {
-            font-size: 10px;
-            font-weight: 600;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
+        .add-filter-btn:hover {
+            background: #252525;
+            border-color: #FF6B00;
+            color: #FF6B00;
         }
 
-        .filter-pills {
+        .add-filter-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Filter Chips */
+        .filter-chips {
             display: flex;
             flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-chip {
+            display: flex;
+            align-items: center;
             gap: 6px;
+            padding: 6px 10px;
+            background: #282828;
+            border: 1px solid #404040;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .filter-chip-label {
+            color: #888;
+            font-weight: 500;
+        }
+
+        .filter-chip-value {
+            color: #fff;
+        }
+
+        .filter-chip-remove {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background: #404040;
+            border: none;
+            border-radius: 50%;
+            color: #888;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+            padding: 0;
+            transition: all 0.15s;
+        }
+
+        .filter-chip-remove:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        .clear-all-filters-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 16px;
+            color: #888;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .clear-all-filters-btn:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        /* Filter Popover */
+        .filter-popover-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999;
+        }
+
+        .filter-popover-overlay.active {
+            display: block;
+        }
+
+        .filter-popover {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            z-index: 1000;
+            min-width: 200px;
+            overflow: hidden;
+        }
+
+        .filter-popover.active {
+            display: block;
+        }
+
+        .filter-popover-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #282828;
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-popover-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #141414;
+            border: none;
+            border-bottom: 1px solid #282828;
+            color: #888;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        .filter-popover-back:hover {
+            color: #fff;
+        }
+
+        .filter-popover-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .filter-popover-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            color: #ccc;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: background 0.1s;
+        }
+
+        .filter-popover-item:hover {
+            background: #282828;
+        }
+
+        .filter-popover-item.selected {
+            background: rgba(255, 107, 0, 0.15);
+            color: #FF6B00;
+        }
+
+        .filter-popover-item svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .filter-popover-item .check-icon {
+            margin-left: auto;
+            color: #FF6B00;
+        }
+
+        .filter-popover-search {
+            padding: 12px;
+            border-bottom: 1px solid #282828;
+        }
+
+        .filter-popover-search input {
+            width: 100%;
+            padding: 8px 12px;
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .filter-popover-search input:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+
+        .filter-popover-search input::placeholder {
+            color: #666;
+        }
+
+        .add-filter-wrapper {
+            position: relative;
+        }
+
+        /* Calendar wrapper takes remaining space */
+        .calendar-wrapper {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Keep search preview styles */
+        .search-preview {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            margin-top: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
         }
 
         .filter-pill {
@@ -3612,11 +3832,9 @@
     </div>
 
     <div class="main-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-title">Filters</div>
-
-            <div class="search-box">
+        <!-- Filter Bar -->
+        <div class="filter-bar" id="filterBar">
+            <div class="filter-bar-search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -3625,55 +3843,70 @@
                 <div class="search-preview" id="searchPreview"></div>
             </div>
 
-
-            <div class="filter-section">
-                <div class="filter-section-title">Sentiment</div>
-                <div class="filter-pills" id="sentimentFilters">
-                    <button class="filter-pill" data-filter="sentiment" data-value="Positive" onclick="toggleFilter(this)">
-                        <span class="icon">😊</span> Positive
-                    </button>
-                    <button class="filter-pill" data-filter="sentiment" data-value="Neutral" onclick="toggleFilter(this)">
-                        <span class="icon">😐</span> Neutral
-                    </button>
-                    <button class="filter-pill" data-filter="sentiment" data-value="Negative" onclick="toggleFilter(this)">
-                        <span class="icon">😟</span> Negative
-                    </button>
-                    <button class="filter-pill" data-filter="sentiment" data-value="Mixed" onclick="toggleFilter(this)">
-                        <span class="icon">🔀</span> Mixed
-                    </button>
+            <div class="add-filter-wrapper">
+                <button class="add-filter-btn" onclick="toggleFilterPopover()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Filter
+                </button>
+                <div class="filter-popover" id="filterPopover">
+                    <!-- Categories view -->
+                    <div id="filterCategories">
+                        <div class="filter-popover-header">Filter by</div>
+                        <button class="filter-popover-item" onclick="showFilterCategory('sentiment')">
+                            <span>😊</span> Sentiment
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                        <button class="filter-popover-item" onclick="showFilterCategory('region')">
+                            <span>🌍</span> Region
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                        <button class="filter-popover-item" onclick="showFilterCategory('country')">
+                            <span>🏳️</span> Country
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                    </div>
+                    <!-- Sentiment options -->
+                    <div id="filterSentimentOptions" style="display:none;">
+                        <button class="filter-popover-back" onclick="showFilterCategories()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            Back
+                        </button>
+                        <div class="filter-popover-header">Sentiment</div>
+                        <div class="filter-popover-list" id="sentimentOptionsList"></div>
+                    </div>
+                    <!-- Region options -->
+                    <div id="filterRegionOptions" style="display:none;">
+                        <button class="filter-popover-back" onclick="showFilterCategories()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            Back
+                        </button>
+                        <div class="filter-popover-header">Region</div>
+                        <div class="filter-popover-list" id="regionOptionsList"></div>
+                    </div>
+                    <!-- Country options -->
+                    <div id="filterCountryOptions" style="display:none;">
+                        <button class="filter-popover-back" onclick="showFilterCategories()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            Back
+                        </button>
+                        <div class="filter-popover-header">Country</div>
+                        <div class="filter-popover-search">
+                            <input type="text" id="countrySearchInput" placeholder="Search countries..." oninput="filterCountryOptions()">
+                        </div>
+                        <div class="filter-popover-list" id="countryOptionsList"></div>
+                    </div>
                 </div>
             </div>
+            <div class="filter-popover-overlay" id="filterPopoverOverlay" onclick="closeFilterPopover()"></div>
 
-            <div class="filter-section">
-                <div class="filter-section-title">Region</div>
-                <div class="filter-pills" id="regionFilters">
-                    <!-- Populated dynamically -->
-                </div>
+            <!-- Active filter chips -->
+            <div class="filter-chips" id="filterChips">
+                <!-- Populated dynamically -->
             </div>
-
-            <div class="filter-section">
-                <div class="filter-section-title">Country</div>
-                <div class="filter-pills" id="countryFilters">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-section-title">PR & Comms Team</div>
-                <div class="filter-pills" id="prTeamFilters">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <div class="filter-section">
-                <div class="filter-section-title">Lead (DRI)</div>
-                <div class="filter-pills" id="leadFilters">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
-        </aside>
+        </div>
 
         <!-- Calendar -->
         <main class="calendar-wrapper">
@@ -4442,70 +4675,201 @@
         }
 
         function buildFilterOptions() {
-            const regions = new Set();
-            const countries = new Set();
-            const prTeams = new Set();
-            const leads = new Set();
-
-            allEvents.forEach(event => {
-                event.region.forEach(r => regions.add(r));
-                event.country.forEach(c => countries.add(c));
-                event.prTeam.forEach(p => prTeams.add(p));
-                event.leads.forEach(l => leads.add(l));
-            });
-
-            // Build Region pills
-            const regionContainer = document.getElementById('regionFilters');
-            regionContainer.innerHTML = [...regions].sort().map(region => `
-                <button class="filter-pill" data-filter="region" data-value="${escapeHtml(region)}" onclick="toggleFilter(this)">
-                    ${escapeHtml(region)}
-                </button>
-            `).join('');
-
-            // Build Country pills
-            const countryContainer = document.getElementById('countryFilters');
-            countryContainer.innerHTML = [...countries].sort().map(country => `
-                <button class="filter-pill" data-filter="country" data-value="${escapeHtml(country)}" onclick="toggleFilter(this)">
-                    ${escapeHtml(country)}
-                </button>
-            `).join('');
-
-            // Build PR & Comms Team pills
-            const prTeamContainer = document.getElementById('prTeamFilters');
-            prTeamContainer.innerHTML = [...prTeams].sort().map(team => `
-                <button class="filter-pill" data-filter="prTeam" data-value="${escapeHtml(team)}" onclick="toggleFilter(this)">
-                    ${escapeHtml(team)}
-                </button>
-            `).join('');
-
-            // Build Lead (DRI) pills
-            const leadContainer = document.getElementById('leadFilters');
-            leadContainer.innerHTML = [...leads].sort().map(lead => `
-                <button class="filter-pill" data-filter="lead" data-value="${escapeHtml(lead)}" onclick="toggleFilter(this)">
-                    ${escapeHtml(lead)}
-                </button>
-            `).join('');
+            // Render any active filter chips
+            renderFilterChips();
         }
 
+        // Legacy toggle filter function - now handled by toggleFilterOption
         function toggleFilter(btn) {
-            const filterType = btn.dataset.filter;
-            const value = btn.dataset.value;
-
-            btn.classList.toggle('active');
-
-            if (btn.classList.contains('active')) {
-                activeFilters[filterType].push(value);
-            } else {
-                activeFilters[filterType] = activeFilters[filterType].filter(v => v !== value);
-            }
-
-            applyFilters();
+            // No longer used - filters are now handled via chip-based UI
         }
 
         function clearAllFilters() {
             activeFilters = { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
-            document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
             document.getElementById('searchInput').value = '';
+            renderFilterChips();
+            applyFilters();
+        }
+
+        // Filter Popover Functions
+        function toggleFilterPopover() {
+            const popover = document.getElementById('filterPopover');
+            const overlay = document.getElementById('filterPopoverOverlay');
+            const isActive = popover.classList.contains('active');
+
+            if (isActive) {
+                closeFilterPopover();
+            } else {
+                popover.classList.add('active');
+                overlay.classList.add('active');
+                showFilterCategories();
+                populateFilterOptions();
+            }
+        }
+
+        function closeFilterPopover() {
+            document.getElementById('filterPopover').classList.remove('active');
+            document.getElementById('filterPopoverOverlay').classList.remove('active');
+        }
+
+        function showFilterCategories() {
+            document.getElementById('filterCategories').style.display = 'block';
+            document.getElementById('filterSentimentOptions').style.display = 'none';
+            document.getElementById('filterRegionOptions').style.display = 'none';
+            document.getElementById('filterCountryOptions').style.display = 'none';
+        }
+
+        function showFilterCategory(category) {
+            document.getElementById('filterCategories').style.display = 'none';
+            document.getElementById('filterSentimentOptions').style.display = category === 'sentiment' ? 'block' : 'none';
+            document.getElementById('filterRegionOptions').style.display = category === 'region' ? 'block' : 'none';
+            document.getElementById('filterCountryOptions').style.display = category === 'country' ? 'block' : 'none';
+
+            if (category === 'country') {
+                document.getElementById('countrySearchInput').value = '';
+                filterCountryOptions();
+            }
+        }
+
+        function populateFilterOptions() {
+            // Sentiment options
+            const sentimentOptions = ['Positive', 'Neutral', 'Negative', 'Mixed'];
+            const sentimentEmojis = { 'Positive': '😊', 'Neutral': '😐', 'Negative': '😟', 'Mixed': '🔀' };
+            document.getElementById('sentimentOptionsList').innerHTML = sentimentOptions.map(opt => `
+                <button class="filter-popover-item ${activeFilters.sentiment.includes(opt) ? 'selected' : ''}"
+                        onclick="toggleFilterOption('sentiment', '${opt}')">
+                    <span>${sentimentEmojis[opt]}</span> ${opt}
+                    ${activeFilters.sentiment.includes(opt) ? '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                </button>
+            `).join('');
+
+            // Region options - flatten arrays from events
+            const regions = new Set();
+            allEvents.forEach(e => {
+                if (Array.isArray(e.region)) {
+                    e.region.forEach(r => regions.add(r));
+                } else if (e.region) {
+                    regions.add(e.region);
+                }
+            });
+            const sortedRegions = [...regions].sort();
+            document.getElementById('regionOptionsList').innerHTML = sortedRegions.map(opt => `
+                <button class="filter-popover-item ${activeFilters.region.includes(opt) ? 'selected' : ''}"
+                        onclick="toggleFilterOption('region', '${escapeHtml(opt)}')">
+                    ${escapeHtml(opt)}
+                    ${activeFilters.region.includes(opt) ? '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                </button>
+            `).join('');
+
+            // Country options (filtered by region if any selected)
+            updateCountryOptions();
+        }
+
+        function updateCountryOptions() {
+            const countries = new Set();
+
+            // Get events, optionally filtered by selected regions
+            let filteredEvents = allEvents;
+            if (activeFilters.region.length > 0) {
+                filteredEvents = allEvents.filter(e => {
+                    const eventRegions = Array.isArray(e.region) ? e.region : [e.region];
+                    return eventRegions.some(r => activeFilters.region.includes(r));
+                });
+            }
+
+            filteredEvents.forEach(e => {
+                if (Array.isArray(e.country)) {
+                    e.country.forEach(c => countries.add(c));
+                } else if (e.country) {
+                    countries.add(e.country);
+                }
+            });
+
+            window.allCountryOptions = [...countries].sort();
+            filterCountryOptions();
+        }
+
+        function filterCountryOptions() {
+            const searchTerm = (document.getElementById('countrySearchInput')?.value || '').toLowerCase();
+            const countries = (window.allCountryOptions || []).filter(c =>
+                c.toLowerCase().includes(searchTerm)
+            );
+
+            document.getElementById('countryOptionsList').innerHTML = countries.map(opt => `
+                <button class="filter-popover-item ${activeFilters.country.includes(opt) ? 'selected' : ''}"
+                        onclick="toggleFilterOption('country', '${escapeHtml(opt)}')">
+                    ${escapeHtml(opt)}
+                    ${activeFilters.country.includes(opt) ? '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                </button>
+            `).join('');
+        }
+
+        function toggleFilterOption(filterType, value) {
+            if (activeFilters[filterType].includes(value)) {
+                activeFilters[filterType] = activeFilters[filterType].filter(v => v !== value);
+            } else {
+                activeFilters[filterType].push(value);
+            }
+
+            // Update options display
+            populateFilterOptions();
+            renderFilterChips();
+            applyFilters();
+        }
+
+        function renderFilterChips() {
+            const container = document.getElementById('filterChips');
+            const chips = [];
+
+            // Sentiment chips
+            activeFilters.sentiment.forEach(val => {
+                chips.push(`
+                    <div class="filter-chip">
+                        <span class="filter-chip-label">Sentiment:</span>
+                        <span class="filter-chip-value">${escapeHtml(val)}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('sentiment', '${escapeHtml(val)}')">&times;</button>
+                    </div>
+                `);
+            });
+
+            // Region chips
+            activeFilters.region.forEach(val => {
+                chips.push(`
+                    <div class="filter-chip">
+                        <span class="filter-chip-label">Region:</span>
+                        <span class="filter-chip-value">${escapeHtml(val)}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('region', '${escapeHtml(val)}')">&times;</button>
+                    </div>
+                `);
+            });
+
+            // Country chips
+            activeFilters.country.forEach(val => {
+                chips.push(`
+                    <div class="filter-chip">
+                        <span class="filter-chip-label">Country:</span>
+                        <span class="filter-chip-value">${escapeHtml(val)}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('country', '${escapeHtml(val)}')">&times;</button>
+                    </div>
+                `);
+            });
+
+            // Count total filters
+            const totalFilters = activeFilters.sentiment.length + activeFilters.region.length + activeFilters.country.length;
+
+            // Add Clear All button if 2+ filters
+            if (totalFilters >= 2) {
+                chips.push(`
+                    <button class="clear-all-filters-btn" onclick="clearAllFilters()">Clear All</button>
+                `);
+            }
+
+            container.innerHTML = chips.join('');
+        }
+
+        function removeFilter(filterType, value) {
+            activeFilters[filterType] = activeFilters[filterType].filter(v => v !== value);
+            renderFilterChips();
             applyFilters();
         }
 
@@ -5835,16 +6199,8 @@
             view.lastUsedAt = new Date().toISOString();
             saveSavedViews();
 
-            // Update filter UI pills to show active state
-            document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
-            Object.keys(activeFilters).forEach(filterType => {
-                if (Array.isArray(activeFilters[filterType])) {
-                    activeFilters[filterType].forEach(value => {
-                        const pill = document.querySelector(`.filter-pill[data-value="${value}"]`);
-                        if (pill) pill.classList.add('active');
-                    });
-                }
-            });
+            // Update filter chips
+            renderFilterChips();
 
             // Show active view banner
             document.getElementById('activeViewName').textContent = view.name;
@@ -5865,7 +6221,7 @@
             activeFilters = { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
 
             // Update filter UI
-            document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
+            renderFilterChips();
             document.getElementById('searchInput').value = '';
 
             // Hide active view banner
@@ -5884,7 +6240,7 @@
             activeFilters = { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
 
             // Update filter UI
-            document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
+            renderFilterChips();
             document.getElementById('searchInput').value = '';
 
             // Hide active view banner

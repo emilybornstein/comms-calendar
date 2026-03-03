@@ -3418,8 +3418,8 @@
             </div>
             <h2>Global Comms Calendar</h2>
             <p>Enter password to continue</p>
-            <form id="passwordForm" onsubmit="return handlePasswordSubmit(event)">
-                <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" autofocus>
+            <form id="passwordForm" onsubmit="alert('Form submitted!'); return handlePasswordSubmit(event)">
+                <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" autofocus onkeydown="if(event.key==='Enter'){alert('Enter pressed!');event.preventDefault();handlePasswordSubmit(event);}">
                 <button type="submit">Enter</button>
             </form>
         </div>

@@ -6,73 +6,6 @@
     <title>Global Comms Calendar</title>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
     <style>
-        /* Password Protection Styles */
-        .password-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-        .password-box {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        .password-box h2 {
-            font-family: 'Spotify Mix', 'Circular', sans-serif;
-            color: #fff;
-            margin-bottom: 8px;
-            font-size: 24px;
-        }
-        .password-box p {
-            color: #888;
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-        .password-box input {
-            width: 100%;
-            padding: 14px;
-            background: #282828;
-            border: 1px solid #404040;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
-        .password-box input:focus {
-            outline: none;
-            border-color: #FF6B00;
-        }
-        .password-box button {
-            width: 100%;
-            padding: 14px;
-            background: #FF6B00;
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .password-box button:hover {
-            background: #FF8533;
-        }
-        .password-error {
-            color: #ff5555;
-            font-size: 13px;
-            margin-top: 12px;
-            display: none;
-        }
-        .app-hidden { display: none !important; }
         @font-face {
             font-family: 'Spotify Mix';
             src: url('https://open.spotifycdn.com/cdn/fonts/SpotifyMixUI-Regular-79c98236bd3ca66c380844ee2c227ab8.woff2') format('woff2');
@@ -1304,6 +1237,120 @@
             margin-bottom: 0;
         }
 
+        /* Google Slides Modal */
+        .gslides-modal {
+            background: #282828;
+            border-radius: 16px;
+            max-width: 480px;
+            width: 90%;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .gslides-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .gslides-header svg {
+            color: #FF6B00;
+        }
+
+        .gslides-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .gslides-subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .gslides-steps {
+            text-align: left;
+            margin-bottom: 28px;
+        }
+
+        .gslides-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .gslides-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .gslides-step-icon {
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .gslides-step-icon svg {
+            width: 20px;
+            height: 20px;
+            color: #888;
+        }
+
+        .gslides-step-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        .gslides-step-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .gslides-step-num {
+            color: #FF6B00;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .gslides-step-name {
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .gslides-step-desc {
+            color: #888;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .gslides-btn {
+            width: 100%;
+            padding: 14px;
+            background: #FF6B00;
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .gslides-btn:hover {
+            background: #FF8533;
+        }
+
         .modal-label {
             font-size: 11px;
             text-transform: uppercase;
@@ -2129,40 +2176,6 @@
     </style>
 </head>
 <body>
-    <!-- Password Protection -->
-    <div class="password-overlay" id="passwordOverlay">
-        <div class="password-box">
-            <h2>Global Comms Calendar</h2>
-            <p>Enter password to access</p>
-            <input type="password" id="passwordInput" placeholder="Password" onkeypress="if(event.key==='Enter')checkPassword()">
-            <button onclick="checkPassword()">Enter</button>
-            <div class="password-error" id="passwordError">Incorrect password</div>
-        </div>
-    </div>
-    <script>
-        function checkPassword() {
-            const input = document.getElementById('passwordInput').value;
-            if (input === 'spotifycomms2026') {
-                document.getElementById('passwordOverlay').style.display = 'none';
-                document.getElementById('mainApp').classList.remove('app-hidden');
-                localStorage.setItem('commsCalendarAuth', 'true');
-            } else {
-                document.getElementById('passwordError').style.display = 'block';
-                document.getElementById('passwordInput').value = '';
-            }
-        }
-        // Check if already authenticated
-        if (localStorage.getItem('commsCalendarAuth') === 'true') {
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('passwordOverlay').style.display = 'none';
-                document.getElementById('mainApp').classList.remove('app-hidden');
-            });
-        }
-    </script>
-
-    <!-- Main App -->
-    <div id="mainApp" class="app-hidden">
-
     <!-- Header -->
     <header class="header">
         <div class="header-left">
@@ -2637,6 +2650,90 @@
             </div>
             <div class="modal-body" id="modalBody">
             </div>
+        </div>
+    </div>
+
+    <!-- Google Slides Modal -->
+    <div class="modal-overlay" id="gslidesOverlay" onclick="closeGslidesModal()">
+        <div class="gslides-modal" onclick="event.stopPropagation()">
+            <div class="gslides-header">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <h3>Want to use Google Slides?</h3>
+            </div>
+            <p class="gslides-subtitle">Here's how to convert your PowerPoint file:</p>
+
+            <div class="gslides-steps">
+                <div class="gslides-step">
+                    <div class="gslides-step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="gslides-step-content">
+                        <div class="gslides-step-title">
+                            <span class="gslides-step-num">Step 1:</span>
+                            <span class="gslides-step-name">Go to Google Drive</span>
+                        </div>
+                        <p class="gslides-step-desc">Open drive.google.com in your browser</p>
+                    </div>
+                </div>
+
+                <div class="gslides-step">
+                    <div class="gslides-step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="gslides-step-content">
+                        <div class="gslides-step-title">
+                            <span class="gslides-step-num">Step 2:</span>
+                            <span class="gslides-step-name">Upload the file</span>
+                        </div>
+                        <p class="gslides-step-desc">Drag the .pptx file into Google Drive or click New > File Upload</p>
+                    </div>
+                </div>
+
+                <div class="gslides-step">
+                    <div class="gslides-step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <div class="gslides-step-content">
+                        <div class="gslides-step-title">
+                            <span class="gslides-step-num">Step 3:</span>
+                            <span class="gslides-step-name">Open in Google Slides</span>
+                        </div>
+                        <p class="gslides-step-desc">Double-click the file, then click "Open with Google Slides"</p>
+                    </div>
+                </div>
+
+                <div class="gslides-step">
+                    <div class="gslides-step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                            <polyline points="7 3 7 8 15 8"></polyline>
+                        </svg>
+                    </div>
+                    <div class="gslides-step-content">
+                        <div class="gslides-step-title">
+                            <span class="gslides-step-num">Step 4:</span>
+                            <span class="gslides-step-name">Save as Google Slides</span>
+                        </div>
+                        <p class="gslides-step-desc">Click File > Save as Google Slides to convert it</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="gslides-btn" onclick="closeGslidesModal()">Got it!</button>
         </div>
     </div>
 
@@ -3897,6 +3994,15 @@
 
             // Save file
             pptx.writeFile({ fileName: `Comms_Calendar_${monthNames[month]}_${year}.pptx` });
+
+            // Show Google Slides modal after download
+            setTimeout(() => {
+                document.getElementById('gslidesOverlay').classList.add('active');
+            }, 500);
+        }
+
+        function closeGslidesModal() {
+            document.getElementById('gslidesOverlay').classList.remove('active');
         }
 
         // Manual refresh function
@@ -4300,6 +4406,5 @@
         // Auto-refresh every 30 seconds
         setInterval(fetchEvents, 30000);
     </script>
-    </div><!-- End mainApp -->
 </body>
 </html>

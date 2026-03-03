@@ -6728,16 +6728,11 @@
         }
 
         function shareView() {
-            console.log('[Share Debug] shareView called');
-
             // Check if there's anything to share
             const hasFilters = activeFilters.sentiment.length || activeFilters.region.length ||
                               activeFilters.country.length || activeFilters.prTeam.length ||
                               activeFilters.lead.length || activeFilters.search;
             const hasHidden = hiddenRecords.size > 0;
-
-            console.log('[Share Debug] hasFilters:', hasFilters);
-            console.log('[Share Debug] hasHidden:', hasHidden, 'count:', hiddenRecords.size);
 
             if (!hasFilters && !hasHidden) {
                 // Show modal explaining nothing to share
@@ -6746,16 +6741,11 @@
             }
 
             const url = new URL(window.location.href.split('?')[0]);
-            console.log('[Share Debug] Base URL:', url.toString());
 
             if (hiddenRecords.size > 0) {
                 // Encode hidden records as URL-encoded JSON
                 const hiddenArray = Array.from(hiddenRecords);
-                console.log('[Share Debug] Hidden array sample:', hiddenArray.slice(0, 5));
-                const jsonString = JSON.stringify(hiddenArray);
-                console.log('[Share Debug] JSON string length:', jsonString.length);
-                console.log('[Share Debug] JSON string first 200 chars:', jsonString.substring(0, 200));
-                url.searchParams.set('hidden', jsonString);
+                url.searchParams.set('hidden', JSON.stringify(hiddenArray));
             }
 
             // Encode active filters
@@ -6775,10 +6765,7 @@
                 url.searchParams.set('lead', activeFilters.lead.join(','));
             }
 
-            const finalUrl = url.toString();
-            console.log('[Share Debug] Final URL length:', finalUrl.length);
-            console.log('[Share Debug] Final URL:', finalUrl);
-            showShareModal(finalUrl, true);
+            showShareModal(url.toString(), true);
         }
 
         function showShareModal(shareUrl, hasContent) {
@@ -6788,7 +6775,6 @@
             // Store URL for copying and escape for safe HTML attribute insertion
             currentShareUrl = shareUrl;
             const escapedUrl = shareUrl ? shareUrl.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
-            console.log('[Share Debug] showShareModal called, URL length:', shareUrl?.length);
 
             let modalContent = '';
             if (hasContent) {
@@ -6837,12 +6823,8 @@
         function copyShareUrl() {
             const input = document.getElementById('shareUrlInput');
             const urlToCopy = currentShareUrl || input.value;
-            console.log('[Share Debug] copyShareUrl called');
-            console.log('[Share Debug] URL to copy length:', urlToCopy?.length);
-            console.log('[Share Debug] URL to copy first 100 chars:', urlToCopy?.substring(0, 100));
 
             navigator.clipboard.writeText(urlToCopy).then(() => {
-                console.log('[Share Debug] URL copied successfully');
                 const btn = input.nextElementSibling;
                 btn.textContent = 'Copied!';
                 btn.style.background = '#1DB954';
@@ -6850,8 +6832,6 @@
                     btn.textContent = 'Copy';
                     btn.style.background = '';
                 }, 2000);
-            }).catch(err => {
-                console.error('[Share Debug] Copy failed:', err);
             });
         }
 
@@ -6863,27 +6843,15 @@
         function loadSharedView() {
             const params = new URLSearchParams(window.location.search);
 
-            console.log('[Share Debug] Full URL:', window.location.href);
-            console.log('[Share Debug] Search params:', window.location.search);
-            console.log('[Share Debug] All params:', Array.from(params.entries()));
-
             // Load hidden records
             if (params.has('hidden')) {
                 try {
                     const hiddenParam = params.get('hidden');
-                    console.log('[Share Debug] Raw hidden param:', hiddenParam);
-                    console.log('[Share Debug] Hidden param length:', hiddenParam?.length);
-                    console.log('[Share Debug] Hidden param first 100 chars:', hiddenParam?.substring(0, 100));
                     const decoded = JSON.parse(hiddenParam);
-                    console.log('[Share Debug] Decoded hidden records count:', decoded?.length);
-                    console.log('[Share Debug] First 5 decoded records:', decoded?.slice(0, 5));
                     hiddenRecords = new Set(decoded);
                     isSharedView = true;
                 } catch (e) {
-                    console.error('[Share Debug] Failed to parse hidden records:', e);
-                    console.error('[Share Debug] Error name:', e.name);
-                    console.error('[Share Debug] Error message:', e.message);
-                    // Don't let this break the page - just continue without hidden records
+                    console.error('Failed to parse hidden records:', e);
                 }
             }
 
@@ -6967,21 +6935,15 @@
         const CORRECT_PASSWORD = 'spotifycomms2026';
 
         function handlePasswordSubmit(event) {
-            console.log('[Password Debug] handlePasswordSubmit called');
-            console.log('[Password Debug] event:', event);
             event.preventDefault();
 
             const input = document.getElementById('passwordInput');
             const enteredPassword = input.value;
-            console.log('[Password Debug] entered password length:', enteredPassword.length);
 
             if (enteredPassword === CORRECT_PASSWORD) {
-                console.log('[Password Debug] Password correct, showing main content');
-                // Store auth in session
                 sessionStorage.setItem('calendarAuth', 'true');
                 showMainContent();
             } else {
-                console.log('[Password Debug] Password incorrect');
                 input.classList.add('error');
                 input.value = '';
                 setTimeout(() => input.classList.remove('error'), 300);
@@ -7042,17 +7004,14 @@
 
                 // Handle Enter key press directly on the input
                 passwordInput.addEventListener('keydown', function(e) {
-                    console.log('[Password Debug] keydown:', e.key);
                     if (e.key === 'Enter') {
                         e.preventDefault();
-                        console.log('[Password Debug] Enter pressed, calling handlePasswordSubmit');
                         handlePasswordSubmit(e);
                     }
                 });
 
                 // Also handle form submit event
                 passwordForm.addEventListener('submit', function(e) {
-                    console.log('[Password Debug] form submit event');
                     e.preventDefault();
                     handlePasswordSubmit(e);
                 });

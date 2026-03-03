@@ -2179,6 +2179,19 @@
             color: #fff;
         }
 
+        .view-card-action.share {
+            color: #888;
+        }
+
+        .view-card-action.share:hover {
+            background: #3B82F6;
+            color: #fff;
+        }
+
+        .view-card-action.share svg {
+            display: block;
+        }
+
         .view-card-action.delete:hover {
             background: #ff4444;
             color: #fff;
@@ -3505,16 +3518,6 @@
                 </svg>
                 Custom Views
             </button>
-            <button class="header-btn" onclick="shareView()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="18" cy="5" r="3"></circle>
-                    <circle cx="6" cy="12" r="3"></circle>
-                    <circle cx="18" cy="19" r="3"></circle>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                </svg>
-                Share
-            </button>
             <button class="header-btn" onclick="enterPresentMode()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -3860,7 +3863,20 @@
                     <div class="view-card-name">All Events</div>
                     <div class="view-card-summary">Show everything, no filters</div>
                 </div>
-                <div class="view-card-count" id="allEventsCount">0 events</div>
+                <div class="view-card-right">
+                    <div class="view-card-count" id="allEventsCount">0 events</div>
+                    <div class="view-card-actions">
+                        <button class="view-card-action share" onclick="event.stopPropagation(); shareAllEvents()" title="Share this view">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div id="savedViewsList">
@@ -5657,6 +5673,15 @@
                         </div>
                         <div class="view-card-count">${view.eventCount || '?'} events</div>
                         <div class="view-card-actions">
+                            <button class="view-card-action share" onclick="event.stopPropagation(); shareViewByIndex(${originalIdx})" title="Share this view">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                                    <circle cx="18" cy="5" r="3"></circle>
+                                    <circle cx="6" cy="12" r="3"></circle>
+                                    <circle cx="18" cy="19" r="3"></circle>
+                                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                                </svg>
+                            </button>
                             <button class="view-card-action" onclick="event.stopPropagation(); editSavedView(${originalIdx})" title="Edit">✎</button>
                             <button class="view-card-action" onclick="event.stopPropagation(); toggleDefaultView(${originalIdx})" title="${isDefault ? 'Remove default' : 'Set as default'}">★</button>
                             <button class="view-card-action delete" onclick="event.stopPropagation(); deleteSavedView(${originalIdx})" title="Delete">✕</button>
@@ -6766,6 +6791,73 @@
             }
 
             showShareModal(url.toString(), true);
+        }
+
+        // Share a specific saved view by its index
+        function shareViewByIndex(idx) {
+            const view = savedViews[idx];
+            if (!view) return;
+
+            const url = new URL(window.location.href.split('?')[0]);
+
+            // Build URL from view's filters
+            if (view.filters) {
+                const f = view.filters;
+                if (f.sentiment?.values?.length) {
+                    url.searchParams.set('sentiment', f.sentiment.values.join(','));
+                }
+                if (f.region?.values?.length) {
+                    url.searchParams.set('region', f.region.values.join(','));
+                }
+                if (f.country?.values?.length) {
+                    url.searchParams.set('country', f.country.values.join(','));
+                }
+                if (f.prTeam?.values?.length) {
+                    url.searchParams.set('prTeam', f.prTeam.values.join(','));
+                }
+                if (f.lead?.values?.length) {
+                    url.searchParams.set('lead', f.lead.values.join(','));
+                }
+            }
+
+            // Add hidden/excluded records from overrides
+            if (view.overrides?.excludedIds?.length) {
+                url.searchParams.set('hidden', JSON.stringify(view.overrides.excludedIds));
+            } else if (view.hiddenRecords?.length) {
+                url.searchParams.set('hidden', JSON.stringify(view.hiddenRecords));
+            }
+
+            showShareModalForView(url.toString(), view.name, view.eventCount || '?');
+        }
+
+        // Share "All Events" (unfiltered view)
+        function shareAllEvents() {
+            const url = new URL(window.location.href.split('?')[0]);
+            // No filters needed - just the base URL
+            showShareModalForView(url.toString(), 'All Events', allEvents.length);
+        }
+
+        // Show share modal with view-specific context
+        function showShareModalForView(shareUrl, viewName, eventCount) {
+            currentShareUrl = shareUrl;
+            const escapedUrl = shareUrl.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            const modalContent = `
+                <h4>Share "${escapeHtml(viewName)}"</h4>
+                <p class="share-modal-description">Share this calendar view with others. They'll see ${eventCount} events with your applied filters.</p>
+                <div class="share-modal-url">
+                    <input type="text" id="shareUrlInput" value="${escapedUrl}" readonly onclick="this.select()">
+                    <button onclick="copyShareUrl()">Copy</button>
+                </div>
+                <div class="share-modal-btns">
+                    <button class="share-modal-close" onclick="closeShareModal()">Done</button>
+                </div>
+            `;
+
+            document.getElementById('shareModalContent').innerHTML = modalContent;
+            document.getElementById('shareModalOverlay').classList.add('active');
+            document.getElementById('shareModal').classList.add('active');
+            document.getElementById('shareUrlInput').select();
         }
 
         function showShareModal(shareUrl, hasContent) {

@@ -4793,15 +4793,17 @@
             setInterval(fetchEvents, 30000);
         }
 
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if already authenticated
+        // Initialize - check authentication
+        (function() {
             if (sessionStorage.getItem('calendarAuth') === 'true') {
                 showMainContent();
             } else {
+                // Make sure password screen is visible and focused
+                document.getElementById('passwordScreen').style.display = 'flex';
+                document.getElementById('mainContent').style.display = 'none';
                 document.getElementById('passwordInput').focus();
             }
-        });
+        })();
     </script>
 </body>
 </html>

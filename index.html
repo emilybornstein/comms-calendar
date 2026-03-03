@@ -4866,11 +4866,15 @@
             // Load hidden records
             if (params.has('hidden')) {
                 try {
-                    const decoded = JSON.parse(params.get('hidden'));
+                    const hiddenParam = params.get('hidden');
+                    console.log('Loading hidden param:', hiddenParam);
+                    const decoded = JSON.parse(hiddenParam);
+                    console.log('Decoded hidden records:', decoded);
                     hiddenRecords = new Set(decoded);
                     isSharedView = true;
                 } catch (e) {
                     console.error('Failed to parse hidden records:', e);
+                    // Don't let this break the page - just continue without hidden records
                 }
             }
 

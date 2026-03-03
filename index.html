@@ -220,6 +220,14 @@
             animation: pulse 1.5s ease-in-out infinite;
         }
 
+        .live-indicator.error .live-dot {
+            background: #ff5555;
+        }
+
+        .live-indicator.error .live-text {
+            color: #ff5555;
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
@@ -2888,6 +2896,14 @@
                     showSharedViewBanner();
                 }
 
+                // Update Live indicator to show connected
+                const liveIndicator = document.querySelector('.live-indicator');
+                const liveText = document.querySelector('.live-text');
+                if (liveIndicator && liveText) {
+                    liveIndicator.classList.remove('error');
+                    liveText.textContent = 'Live';
+                }
+
             } catch (error) {
                 console.error('Error fetching events:', error);
                 document.getElementById('calendarGrid').innerHTML = `
@@ -2895,6 +2911,14 @@
                         Error loading events: ${error.message}
                     </div>
                 `;
+
+                // Update Live indicator to show error
+                const liveIndicator = document.querySelector('.live-indicator');
+                const liveText = document.querySelector('.live-text');
+                if (liveIndicator && liveText) {
+                    liveIndicator.classList.add('error');
+                    liveText.textContent = 'Offline';
+                }
             }
         }
 

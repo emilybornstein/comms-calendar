@@ -2554,8 +2554,10 @@
             </div>
             <h2>Global Comms Calendar</h2>
             <p>Enter password to continue</p>
-            <input type="password" id="passwordInput" placeholder="Password" onkeydown="handlePasswordKeydown(event)">
-            <button id="passwordSubmitBtn" onclick="checkPassword()">Enter</button>
+            <form id="passwordForm" onsubmit="return handlePasswordSubmit(event)">
+                <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
+                <button type="submit">Enter</button>
+            </form>
         </div>
     </div>
 
@@ -4957,14 +4959,9 @@
         // Password Protection
         const CORRECT_PASSWORD = 'spotifycomms2026';
 
-        function handlePasswordKeydown(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                checkPassword();
-            }
-        }
+        function handlePasswordSubmit(event) {
+            event.preventDefault();
 
-        function checkPassword() {
             const input = document.getElementById('passwordInput');
             const enteredPassword = input.value;
 
@@ -4977,6 +4974,8 @@
                 input.value = '';
                 setTimeout(() => input.classList.remove('error'), 300);
             }
+
+            return false;
         }
 
         function showMainContent() {

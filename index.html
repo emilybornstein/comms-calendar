@@ -3873,6 +3873,14 @@
                             <span>🏳️</span> Country
                             <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
+                        <button class="filter-popover-item" onclick="showFilterCategory('prTeam')">
+                            <span>👥</span> PR & Comms Team
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                        <button class="filter-popover-item" onclick="showFilterCategory('lead')">
+                            <span>👤</span> Comms Lead (DRI)
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
                     </div>
                     <!-- Sentiment options -->
                     <div id="filterSentimentOptions" style="display:none;">
@@ -3903,6 +3911,30 @@
                             <input type="text" id="countrySearchInput" placeholder="Search countries..." oninput="filterCountryOptions()">
                         </div>
                         <div class="filter-popover-list" id="countryOptionsList"></div>
+                    </div>
+                    <!-- PR & Comms Team options -->
+                    <div id="filterPrTeamOptions" style="display:none;">
+                        <button class="filter-popover-back" onclick="showFilterCategories()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            Back
+                        </button>
+                        <div class="filter-popover-header">PR & Comms Team</div>
+                        <div class="filter-popover-search">
+                            <input type="text" id="prTeamSearchInput" placeholder="Search teams..." oninput="filterPrTeamOptions()">
+                        </div>
+                        <div class="filter-popover-list" id="prTeamOptionsList"></div>
+                    </div>
+                    <!-- Comms Lead (DRI) options -->
+                    <div id="filterLeadOptions" style="display:none;">
+                        <button class="filter-popover-back" onclick="showFilterCategories()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            Back
+                        </button>
+                        <div class="filter-popover-header">Comms Lead (DRI)</div>
+                        <div class="filter-popover-search">
+                            <input type="text" id="leadSearchInput" placeholder="Search leads..." oninput="filterLeadOptions()">
+                        </div>
+                        <div class="filter-popover-list" id="leadOptionsList"></div>
                     </div>
                 </div>
             </div>
@@ -4723,6 +4755,8 @@
             document.getElementById('filterSentimentOptions').style.display = 'none';
             document.getElementById('filterRegionOptions').style.display = 'none';
             document.getElementById('filterCountryOptions').style.display = 'none';
+            document.getElementById('filterPrTeamOptions').style.display = 'none';
+            document.getElementById('filterLeadOptions').style.display = 'none';
         }
 
         function showFilterCategory(category) {
@@ -4730,10 +4764,20 @@
             document.getElementById('filterSentimentOptions').style.display = category === 'sentiment' ? 'block' : 'none';
             document.getElementById('filterRegionOptions').style.display = category === 'region' ? 'block' : 'none';
             document.getElementById('filterCountryOptions').style.display = category === 'country' ? 'block' : 'none';
+            document.getElementById('filterPrTeamOptions').style.display = category === 'prTeam' ? 'block' : 'none';
+            document.getElementById('filterLeadOptions').style.display = category === 'lead' ? 'block' : 'none';
 
             if (category === 'country') {
                 document.getElementById('countrySearchInput').value = '';
                 filterCountryOptions();
+            }
+            if (category === 'prTeam') {
+                document.getElementById('prTeamSearchInput').value = '';
+                filterPrTeamOptions();
+            }
+            if (category === 'lead') {
+                document.getElementById('leadSearchInput').value = '';
+                filterLeadOptions();
             }
         }
 
@@ -4769,6 +4813,68 @@
 
             // Country options (filtered by region if any selected)
             updateCountryOptions();
+
+            // PR Team options
+            updatePrTeamOptions();
+
+            // Lead options
+            updateLeadOptions();
+        }
+
+        function updatePrTeamOptions() {
+            const prTeams = new Set();
+            allEvents.forEach(e => {
+                if (Array.isArray(e.prTeam)) {
+                    e.prTeam.forEach(t => prTeams.add(t));
+                } else if (e.prTeam) {
+                    prTeams.add(e.prTeam);
+                }
+            });
+            window.allPrTeamOptions = [...prTeams].sort();
+            filterPrTeamOptions();
+        }
+
+        function filterPrTeamOptions() {
+            const searchTerm = (document.getElementById('prTeamSearchInput')?.value || '').toLowerCase();
+            const teams = (window.allPrTeamOptions || []).filter(t =>
+                t.toLowerCase().includes(searchTerm)
+            );
+
+            document.getElementById('prTeamOptionsList').innerHTML = teams.map(opt => `
+                <button class="filter-popover-item ${activeFilters.prTeam.includes(opt) ? 'selected' : ''}"
+                        onclick="toggleFilterOption('prTeam', '${escapeHtml(opt)}')">
+                    ${escapeHtml(opt)}
+                    ${activeFilters.prTeam.includes(opt) ? '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                </button>
+            `).join('');
+        }
+
+        function updateLeadOptions() {
+            const leads = new Set();
+            allEvents.forEach(e => {
+                if (Array.isArray(e.leads)) {
+                    e.leads.forEach(l => leads.add(l));
+                } else if (e.leads) {
+                    leads.add(e.leads);
+                }
+            });
+            window.allLeadOptions = [...leads].sort();
+            filterLeadOptions();
+        }
+
+        function filterLeadOptions() {
+            const searchTerm = (document.getElementById('leadSearchInput')?.value || '').toLowerCase();
+            const leads = (window.allLeadOptions || []).filter(l =>
+                l.toLowerCase().includes(searchTerm)
+            );
+
+            document.getElementById('leadOptionsList').innerHTML = leads.map(opt => `
+                <button class="filter-popover-item ${activeFilters.lead.includes(opt) ? 'selected' : ''}"
+                        onclick="toggleFilterOption('lead', '${escapeHtml(opt)}')">
+                    ${escapeHtml(opt)}
+                    ${activeFilters.lead.includes(opt) ? '<svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+                </button>
+            `).join('');
         }
 
         function updateCountryOptions() {
@@ -4860,8 +4966,30 @@
                 `);
             });
 
+            // PR Team chips
+            activeFilters.prTeam.forEach(val => {
+                chips.push(`
+                    <div class="filter-chip">
+                        <span class="filter-chip-label">Team:</span>
+                        <span class="filter-chip-value">${escapeHtml(val)}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('prTeam', '${escapeHtml(val)}')">&times;</button>
+                    </div>
+                `);
+            });
+
+            // Lead chips
+            activeFilters.lead.forEach(val => {
+                chips.push(`
+                    <div class="filter-chip">
+                        <span class="filter-chip-label">Lead:</span>
+                        <span class="filter-chip-value">${escapeHtml(val)}</span>
+                        <button class="filter-chip-remove" onclick="removeFilter('lead', '${escapeHtml(val)}')">&times;</button>
+                    </div>
+                `);
+            });
+
             // Count total filters
-            const totalFilters = activeFilters.sentiment.length + activeFilters.region.length + activeFilters.country.length;
+            const totalFilters = activeFilters.sentiment.length + activeFilters.region.length + activeFilters.country.length + activeFilters.prTeam.length + activeFilters.lead.length;
 
             // Add Clear All button if 2+ filters
             if (totalFilters >= 2) {

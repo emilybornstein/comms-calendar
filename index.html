@@ -40,7 +40,7 @@
             box-sizing: border-box;
         }
 
-        body {
+        body, input, button, select, textarea, option {
             font-family: 'Spotify Mix', 'Circular', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #0a0a0a;
             color: #ffffff;
@@ -1907,9 +1907,25 @@
             background: #333;
         }
 
+        .saved-view-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
         .saved-view-name {
             font-size: 13px;
             color: #fff;
+        }
+
+        .saved-view-description {
+            font-size: 11px;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .saved-view-delete {
@@ -1970,6 +1986,46 @@
         .save-view-modal input:focus {
             outline: none;
             border-color: #FF6B00;
+        }
+
+        .save-view-modal textarea {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 16px;
+            resize: none;
+            height: 70px;
+        }
+
+        .save-view-modal textarea:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+
+        .save-view-notice {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .save-view-notice svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+            color: #FF6B00;
+        }
+
+        .save-view-notice strong {
+            color: #FF6B00;
         }
 
         .save-view-modal-btns {
@@ -2725,11 +2781,10 @@
             <button class="customize-done-btn" onclick="applyCustomization()">Apply & Close</button>
             <button class="save-view-btn" onclick="saveCurrentView()" style="margin-left: 8px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                Save View
+                Create Custom View
             </button>
         </div>
     </div>
@@ -2755,8 +2810,17 @@
     <!-- Save View Modal -->
     <div class="modal-overlay" id="saveViewOverlay" onclick="closeSaveViewModal()"></div>
     <div class="save-view-modal" id="saveViewModal">
-        <h4>Save Custom View</h4>
-        <input type="text" id="saveViewName" placeholder="Enter view name..." onkeypress="if(event.key==='Enter')confirmSaveView()">
+        <h4>Create New Custom View</h4>
+        <input type="text" id="saveViewName" placeholder="View name (e.g., Leadership Calendar)">
+        <textarea id="saveViewDescription" placeholder="Description (optional)"></textarea>
+        <div class="save-view-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>This view is saved to your browser only. To share with others, use the <strong>Share</strong> button after applying your view.</span>
+        </div>
         <div class="save-view-modal-btns">
             <button class="save-view-cancel" onclick="closeSaveViewModal()">Cancel</button>
             <button class="save-view-confirm" onclick="confirmSaveView()">Save View</button>
@@ -4208,7 +4272,10 @@
             section.style.display = 'block';
             container.innerHTML = savedViews.map((view, idx) => `
                 <div class="saved-view-item" onclick="loadSavedView(${idx})">
-                    <span class="saved-view-name">${escapeHtml(view.name)}</span>
+                    <div class="saved-view-info">
+                        <span class="saved-view-name">${escapeHtml(view.name)}</span>
+                        ${view.description ? `<span class="saved-view-description">${escapeHtml(view.description)}</span>` : ''}
+                    </div>
                     <button class="saved-view-delete" onclick="event.stopPropagation(); deleteSavedView(${idx})" title="Delete view">&times;</button>
                 </div>
             `).join('');
@@ -4216,6 +4283,7 @@
 
         function saveCurrentView() {
             document.getElementById('saveViewName').value = '';
+            document.getElementById('saveViewDescription').value = '';
             document.getElementById('saveViewOverlay').classList.add('active');
             document.getElementById('saveViewModal').classList.add('active');
             document.getElementById('saveViewName').focus();
@@ -4233,8 +4301,11 @@
                 return;
             }
 
+            const description = document.getElementById('saveViewDescription').value.trim();
+
             const view = {
                 name: name,
+                description: description,
                 hiddenRecords: Array.from(hiddenRecords),
                 filters: { ...activeFilters },
                 eventCount: allEvents.length - hiddenRecords.size,

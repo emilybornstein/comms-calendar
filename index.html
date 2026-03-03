@@ -4770,13 +4770,9 @@
             const url = new URL(window.location.href.split('?')[0]);
 
             if (hiddenRecords.size > 0) {
-                // Encode hidden records as URL-safe base64
+                // Encode hidden records as URL-encoded JSON
                 const hiddenArray = Array.from(hiddenRecords);
-                const encoded = btoa(JSON.stringify(hiddenArray))
-                    .replace(/\+/g, '-')
-                    .replace(/\//g, '_')
-                    .replace(/=+$/, '');
-                url.searchParams.set('hidden', encoded);
+                url.searchParams.set('hidden', JSON.stringify(hiddenArray));
             }
 
             // Encode active filters
@@ -4870,15 +4866,7 @@
             // Load hidden records
             if (params.has('hidden')) {
                 try {
-                    // Decode URL-safe base64
-                    let encoded = params.get('hidden')
-                        .replace(/-/g, '+')
-                        .replace(/_/g, '/');
-                    // Add padding if needed
-                    while (encoded.length % 4) {
-                        encoded += '=';
-                    }
-                    const decoded = JSON.parse(atob(encoded));
+                    const decoded = JSON.parse(params.get('hidden'));
                     hiddenRecords = new Set(decoded);
                     isSharedView = true;
                 } catch (e) {

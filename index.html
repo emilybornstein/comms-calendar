@@ -1241,10 +1241,33 @@
         .gslides-modal {
             background: #282828;
             border-radius: 16px;
-            max-width: 480px;
+            max-width: 500px;
             width: 90%;
             padding: 32px;
-            text-align: center;
+            position: relative;
+        }
+
+        .gslides-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .gslides-close:hover {
+            background: #404040;
+            color: #fff;
         }
 
         .gslides-header {
@@ -1257,10 +1280,12 @@
 
         .gslides-header svg {
             color: #FF6B00;
+            fill: #FF6B00;
+            stroke: #FF6B00;
         }
 
         .gslides-header h3 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: #fff;
         }
@@ -1268,19 +1293,20 @@
         .gslides-subtitle {
             color: #888;
             font-size: 14px;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
+            text-align: center;
         }
 
         .gslides-steps {
             text-align: left;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
 
         .gslides-step {
             display: flex;
             align-items: flex-start;
-            gap: 14px;
-            margin-bottom: 20px;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .gslides-step:last-child {
@@ -1288,10 +1314,10 @@
         }
 
         .gslides-step-icon {
-            width: 40px;
-            height: 40px;
-            background: #1a1a1a;
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #FF6B00 0%, #FF8533 100%);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1301,31 +1327,29 @@
         .gslides-step-icon svg {
             width: 20px;
             height: 20px;
-            color: #888;
+            color: #fff;
+            stroke: #fff;
         }
 
         .gslides-step-content {
             flex: 1;
-            padding-top: 2px;
-        }
-
-        .gslides-step-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
+            padding-top: 4px;
         }
 
         .gslides-step-num {
             color: #FF6B00;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
         }
 
         .gslides-step-name {
             color: #fff;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
+            margin-bottom: 4px;
         }
 
         .gslides-step-desc {
@@ -1334,13 +1358,17 @@
             line-height: 1.4;
         }
 
+        .gslides-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
         .gslides-btn {
-            width: 100%;
-            padding: 14px;
-            background: #FF6B00;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #FF6B00 0%, #FF8533 100%);
             border: none;
             border-radius: 8px;
-            color: #000;
+            color: #fff;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
@@ -1348,7 +1376,8 @@
         }
 
         .gslides-btn:hover {
-            background: #FF8533;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
         }
 
         .modal-label {
@@ -2656,46 +2685,26 @@
     <!-- Google Slides Modal -->
     <div class="modal-overlay" id="gslidesOverlay" onclick="closeGslidesModal()">
         <div class="gslides-modal" onclick="event.stopPropagation()">
+            <button class="gslides-close" onclick="closeGslidesModal()">&times;</button>
             <div class="gslides-header">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
                 <h3>Want to use Google Slides?</h3>
             </div>
-            <p class="gslides-subtitle">Here's how to convert your PowerPoint file:</p>
+            <p class="gslides-subtitle">Turn your PowerPoint into an editable Google Slides deck in 4 easy steps!</p>
 
             <div class="gslides-steps">
                 <div class="gslides-step">
                     <div class="gslides-step-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                         </svg>
                     </div>
                     <div class="gslides-step-content">
-                        <div class="gslides-step-title">
-                            <span class="gslides-step-num">Step 1:</span>
-                            <span class="gslides-step-name">Go to Google Drive</span>
-                        </div>
-                        <p class="gslides-step-desc">Open drive.google.com in your browser</p>
-                    </div>
-                </div>
-
-                <div class="gslides-step">
-                    <div class="gslides-step-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                    </div>
-                    <div class="gslides-step-content">
-                        <div class="gslides-step-title">
-                            <span class="gslides-step-num">Step 2:</span>
-                            <span class="gslides-step-name">Upload the file</span>
-                        </div>
-                        <p class="gslides-step-desc">Drag the .pptx file into Google Drive or click New > File Upload</p>
+                        <div class="gslides-step-num">Step 1</div>
+                        <div class="gslides-step-name">Open Google Slides</div>
+                        <p class="gslides-step-desc">Go to slides.google.com and open your presentation</p>
                     </div>
                 </div>
 
@@ -2704,36 +2713,50 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
+                            <path d="M12 18v-6"></path>
+                            <path d="M9 15l3-3 3 3"></path>
                         </svg>
                     </div>
                     <div class="gslides-step-content">
-                        <div class="gslides-step-title">
-                            <span class="gslides-step-num">Step 3:</span>
-                            <span class="gslides-step-name">Open in Google Slides</span>
-                        </div>
-                        <p class="gslides-step-desc">Double-click the file, then click "Open with Google Slides"</p>
+                        <div class="gslides-step-num">Step 2</div>
+                        <div class="gslides-step-name">Click File → Import slides</div>
+                        <p class="gslides-step-desc">Find "Import slides" in the File menu</p>
                     </div>
                 </div>
 
                 <div class="gslides-step">
                     <div class="gslides-step-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                            <polyline points="7 3 7 8 15 8"></polyline>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
                     </div>
                     <div class="gslides-step-content">
-                        <div class="gslides-step-title">
-                            <span class="gslides-step-num">Step 4:</span>
-                            <span class="gslides-step-name">Save as Google Slides</span>
-                        </div>
-                        <p class="gslides-step-desc">Click File > Save as Google Slides to convert it</p>
+                        <div class="gslides-step-num">Step 3</div>
+                        <div class="gslides-step-name">Upload your PPT</div>
+                        <p class="gslides-step-desc">Select the PowerPoint file you just downloaded</p>
+                    </div>
+                </div>
+
+                <div class="gslides-step">
+                    <div class="gslides-step-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </div>
+                    <div class="gslides-step-content">
+                        <div class="gslides-step-num">Step 4</div>
+                        <div class="gslides-step-name">Done!</div>
+                        <p class="gslides-step-desc">Your calendar is now ready to edit in Google Slides</p>
                     </div>
                 </div>
             </div>
 
-            <button class="gslides-btn" onclick="closeGslidesModal()">Got it!</button>
+            <div class="gslides-footer">
+                <button class="gslides-btn" onclick="closeGslidesModal()">Got it!</button>
+            </div>
         </div>
     </div>
 

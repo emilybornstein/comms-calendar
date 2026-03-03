@@ -3096,7 +3096,7 @@
             // Count events per month
             const eventCounts = {};
             allEvents.forEach(e => {
-                const d = new Date(e.date);
+                const d = new Date(e.date + 'T00:00:00');
                 if (d.getFullYear() === currentYear) {
                     const m = d.getMonth();
                     eventCounts[m] = (eventCounts[m] || 0) + 1;
@@ -3474,7 +3474,7 @@
             const month = currentDate.getMonth();
 
             const monthEvents = filteredEvents.filter(e => {
-                const d = new Date(e.date);
+                const d = new Date(e.date + 'T00:00:00');
                 return d.getMonth() === month && d.getFullYear() === year;
             });
 

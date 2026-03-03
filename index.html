@@ -2541,6 +2541,604 @@
         .share-modal-close:hover {
             background: #444;
         }
+
+        /* ===== Custom View Builder Modal ===== */
+        .view-builder-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+        }
+
+        .view-builder-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .view-builder {
+            background: #181818;
+            border-radius: 12px;
+            width: 720px;
+            max-width: 95vw;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .view-builder-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #282828;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-builder-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .view-builder-steps {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .view-builder-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .view-builder-step.active {
+            color: #fff;
+        }
+
+        .view-builder-step .step-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .view-builder-step.active .step-num {
+            background: #FF6B00;
+            color: #000;
+        }
+
+        .view-builder-step.completed .step-num {
+            background: #1DB954;
+            color: #000;
+        }
+
+        .step-arrow {
+            color: #444;
+            font-size: 10px;
+        }
+
+        .view-builder-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .view-builder-close:hover {
+            color: #fff;
+        }
+
+        .view-builder-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .view-builder-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #282828;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .view-builder-count {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .view-builder-count strong {
+            color: #FF6B00;
+            font-weight: 600;
+        }
+
+        .view-builder-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .vb-btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .vb-btn-secondary {
+            background: #282828;
+            border: 1px solid #444;
+            color: #ccc;
+        }
+
+        .vb-btn-secondary:hover {
+            background: #333;
+            border-color: #555;
+        }
+
+        .vb-btn-primary {
+            background: #FF6B00;
+            border: none;
+            color: #000;
+        }
+
+        .vb-btn-primary:hover {
+            background: #ff8533;
+        }
+
+        .vb-btn-primary:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .filter-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-logic-toggle {
+            display: flex;
+            gap: 4px;
+            background: #282828;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .filter-logic-btn {
+            padding: 4px 10px;
+            border: none;
+            background: transparent;
+            color: #888;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .filter-logic-btn.active {
+            background: #444;
+            color: #fff;
+        }
+
+        .filter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-chip {
+            padding: 8px 14px;
+            background: #282828;
+            border: 1px solid #333;
+            border-radius: 20px;
+            color: #ccc;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .filter-chip:hover {
+            background: #333;
+            border-color: #444;
+        }
+
+        .filter-chip.selected {
+            background: #FF6B00;
+            border-color: #FF6B00;
+            color: #000;
+        }
+
+        /* Date Range Filter */
+        .date-range-section {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .date-range-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .date-range-custom {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .date-range-custom input {
+            padding: 8px 12px;
+            background: #282828;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
+        }
+
+        .date-range-custom input:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+
+        .date-range-custom span {
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* Boolean Filters */
+        .boolean-filters {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .boolean-filter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #282828;
+            border: 1px solid #333;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .boolean-filter:hover {
+            border-color: #444;
+        }
+
+        .boolean-filter.active {
+            border-color: #FF6B00;
+            background: rgba(255, 107, 0, 0.1);
+        }
+
+        .boolean-filter input {
+            display: none;
+        }
+
+        .boolean-filter .toggle {
+            width: 36px;
+            height: 20px;
+            background: #444;
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .boolean-filter .toggle::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #888;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+        }
+
+        .boolean-filter.active .toggle {
+            background: #FF6B00;
+        }
+
+        .boolean-filter.active .toggle::after {
+            left: 18px;
+            background: #fff;
+        }
+
+        .boolean-filter span {
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        /* Search Filter */
+        .search-filter input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #282828;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .search-filter input:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+
+        /* Step 2: Review Events */
+        .review-events {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .review-month-group {
+            margin-bottom: 20px;
+        }
+
+        .review-month-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 0;
+            border-bottom: 1px solid #282828;
+            margin-bottom: 8px;
+            position: sticky;
+            top: 0;
+            background: #181818;
+        }
+
+        .review-event {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #1e1e1e;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            transition: all 0.15s;
+        }
+
+        .review-event:hover {
+            background: #252525;
+        }
+
+        .review-event.excluded {
+            opacity: 0.5;
+        }
+
+        .review-event.pinned {
+            background: rgba(255, 107, 0, 0.1);
+            border: 1px solid #FF6B00;
+        }
+
+        .review-event-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .review-event-checkbox.checked {
+            background: #FF6B00;
+            border-color: #FF6B00;
+        }
+
+        .review-event-checkbox svg {
+            width: 12px;
+            height: 12px;
+            color: #000;
+        }
+
+        .review-event-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .review-event-title {
+            font-size: 13px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .review-event-meta {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .review-event-tags {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .review-event-tag {
+            padding: 3px 8px;
+            background: #333;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #aaa;
+        }
+
+        /* Step 3: Save View */
+        .save-view-form {
+            max-width: 400px;
+        }
+
+        .save-view-field {
+            margin-bottom: 20px;
+        }
+
+        .save-view-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .save-view-field input,
+        .save-view-field textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #282828;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .save-view-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .save-view-field input:focus,
+        .save-view-field textarea:focus {
+            outline: none;
+            border-color: #FF6B00;
+        }
+
+        .save-view-preview {
+            padding: 12px 16px;
+            background: #282828;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .save-view-preview-title {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .save-view-preview-text {
+            font-size: 13px;
+            color: #ccc;
+        }
+
+        .visibility-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .visibility-option {
+            flex: 1;
+            padding: 14px;
+            background: #282828;
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+
+        .visibility-option:hover {
+            border-color: #444;
+        }
+
+        .visibility-option.selected {
+            border-color: #FF6B00;
+            background: rgba(255, 107, 0, 0.1);
+        }
+
+        .visibility-option-icon {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .visibility-option-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .visibility-option-desc {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Pinned Events Section */
+        .pinned-events-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #282828;
+        }
+
+        .pinned-events-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .pinned-events-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+        }
+
+        .add-pinned-btn {
+            padding: 6px 12px;
+            background: #282828;
+            border: 1px dashed #444;
+            border-radius: 4px;
+            color: #888;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .add-pinned-btn:hover {
+            border-color: #FF6B00;
+            color: #FF6B00;
+        }
     </style>
 </head>
 <body>
@@ -3007,12 +3605,12 @@
 
         <div class="customize-footer">
             <button class="customize-done-btn" onclick="applyCustomization()">Apply & Close</button>
-            <button class="save-view-btn" onclick="saveCurrentView()" style="margin-left: 8px;">
+            <button class="save-view-btn" onclick="toggleCustomizePanel(); openViewBuilder();" style="margin-left: 8px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                Create Custom View
+                Create New View
             </button>
         </div>
     </div>
@@ -3029,6 +3627,240 @@
     <div class="share-modal-overlay" id="shareModalOverlay" onclick="closeShareModal()"></div>
     <div class="share-modal" id="shareModal">
         <div id="shareModalContent"></div>
+    </div>
+
+    <!-- Custom View Builder Modal -->
+    <div class="view-builder-overlay" id="viewBuilderOverlay">
+        <div class="view-builder" onclick="event.stopPropagation()">
+            <div class="view-builder-header">
+                <div class="view-builder-steps">
+                    <div class="view-builder-step active" id="vbStep1">
+                        <span class="step-num">1</span>
+                        <span>Define Filters</span>
+                    </div>
+                    <span class="step-arrow">→</span>
+                    <div class="view-builder-step" id="vbStep2">
+                        <span class="step-num">2</span>
+                        <span>Review Events</span>
+                    </div>
+                    <span class="step-arrow">→</span>
+                    <div class="view-builder-step" id="vbStep3">
+                        <span class="step-num">3</span>
+                        <span>Save View</span>
+                    </div>
+                </div>
+                <button class="view-builder-close" onclick="closeViewBuilder()">&times;</button>
+            </div>
+
+            <div class="view-builder-body" id="viewBuilderBody">
+                <!-- Step 1: Define Filters -->
+                <div id="vbStepContent1">
+                    <!-- Date Range -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Date Range</span>
+                        </div>
+                        <div class="date-range-section">
+                            <div class="date-range-presets" id="dateRangePresets">
+                                <div class="filter-chip selected" data-date="all">All Time</div>
+                                <div class="filter-chip" data-date="Q1">Q1 2026</div>
+                                <div class="filter-chip" data-date="Q2">Q2 2026</div>
+                                <div class="filter-chip" data-date="Q3">Q3 2026</div>
+                                <div class="filter-chip" data-date="Q4">Q4 2026</div>
+                            </div>
+                            <div class="date-range-custom">
+                                <input type="date" id="vbDateStart" placeholder="Start">
+                                <span>to</span>
+                                <input type="date" id="vbDateEnd" placeholder="End">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Sentiment</span>
+                            <div class="filter-logic-toggle" data-filter="sentiment">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbSentimentChips"></div>
+                    </div>
+
+                    <!-- Region -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Region</span>
+                            <div class="filter-logic-toggle" data-filter="region">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbRegionChips"></div>
+                    </div>
+
+                    <!-- Country -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Country</span>
+                            <div class="filter-logic-toggle" data-filter="country">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbCountryChips"></div>
+                    </div>
+
+                    <!-- PR & Comms Team -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">PR & Comms Team</span>
+                            <div class="filter-logic-toggle" data-filter="prTeam">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbPrTeamChips"></div>
+                    </div>
+
+                    <!-- Lead (DRI) -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Lead (DRI)</span>
+                            <div class="filter-logic-toggle" data-filter="lead">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbLeadChips"></div>
+                    </div>
+
+                    <!-- Spotify Team -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Spotify Team</span>
+                            <div class="filter-logic-toggle" data-filter="spotifyTeam">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbSpotifyTeamChips"></div>
+                    </div>
+
+                    <!-- IC Type -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">IC Type</span>
+                            <div class="filter-logic-toggle" data-filter="icType">
+                                <button class="filter-logic-btn active" data-logic="OR">Any</button>
+                                <button class="filter-logic-btn" data-logic="AND">All</button>
+                            </div>
+                        </div>
+                        <div class="filter-chips" id="vbIcTypeChips"></div>
+                    </div>
+
+                    <!-- Boolean Filters -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Special Flags</span>
+                        </div>
+                        <div class="boolean-filters">
+                            <label class="boolean-filter" id="vbAddToNote">
+                                <input type="checkbox">
+                                <div class="toggle"></div>
+                                <span>Add to The Note</span>
+                            </label>
+                            <label class="boolean-filter" id="vbBrandMilestone">
+                                <input type="checkbox">
+                                <div class="toggle"></div>
+                                <span>Brand Milestone</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="filter-section">
+                        <div class="filter-section-header">
+                            <span class="filter-section-title">Text Search</span>
+                        </div>
+                        <div class="search-filter">
+                            <input type="text" id="vbSearchInput" placeholder="Search event titles...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Review Events -->
+                <div id="vbStepContent2" style="display: none;">
+                    <div class="review-events" id="vbReviewEvents">
+                        <!-- Events will be populated here -->
+                    </div>
+
+                    <div class="pinned-events-section" id="vbPinnedSection" style="display: none;">
+                        <div class="pinned-events-header">
+                            <span class="pinned-events-title">Pinned Events (included even if they don't match filters)</span>
+                            <button class="add-pinned-btn" onclick="showPinnedEventPicker()">+ Add Event</button>
+                        </div>
+                        <div id="vbPinnedEvents"></div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Save View -->
+                <div id="vbStepContent3" style="display: none;">
+                    <div class="save-view-form">
+                        <div class="save-view-preview">
+                            <div class="save-view-preview-title">Filter Summary</div>
+                            <div class="save-view-preview-text" id="vbFilterSummary">All events</div>
+                        </div>
+
+                        <div class="save-view-field">
+                            <label>View Name *</label>
+                            <input type="text" id="vbViewName" placeholder="e.g., Leadership Calendar">
+                        </div>
+
+                        <div class="save-view-field">
+                            <label>Description (optional)</label>
+                            <textarea id="vbViewDescription" placeholder="Brief description of this view..."></textarea>
+                        </div>
+
+                        <div class="save-view-field">
+                            <label>Visibility</label>
+                            <div class="visibility-toggle">
+                                <div class="visibility-option selected" data-visibility="private" onclick="selectVisibility('private')">
+                                    <div class="visibility-option-icon">🔒</div>
+                                    <div class="visibility-option-label">Private</div>
+                                    <div class="visibility-option-desc">Only visible to you</div>
+                                </div>
+                                <div class="visibility-option" data-visibility="shared" onclick="selectVisibility('shared')">
+                                    <div class="visibility-option-icon">🔗</div>
+                                    <div class="visibility-option-label">Shared</div>
+                                    <div class="visibility-option-desc">Anyone with the link</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="save-view-field" id="vbDefaultViewField">
+                            <label class="boolean-filter" id="vbSetDefault">
+                                <input type="checkbox">
+                                <div class="toggle"></div>
+                                <span>Set as default view (loads on app start)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-builder-footer">
+                <div class="view-builder-count">
+                    <strong id="vbMatchCount">0</strong> events match
+                </div>
+                <div class="view-builder-actions">
+                    <button class="vb-btn vb-btn-secondary" id="vbBackBtn" style="display: none;" onclick="viewBuilderBack()">Back</button>
+                    <button class="vb-btn vb-btn-secondary" id="vbSkipBtn" onclick="viewBuilderSkipToSave()">Skip to Save</button>
+                    <button class="vb-btn vb-btn-primary" id="vbNextBtn" onclick="viewBuilderNext()">Next: Review Events</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Refresh Toast -->
@@ -4754,6 +5586,500 @@
             toggleCustomizePanel();
             currentDate = new Date(); // Navigate to current month
             applyFilters();
+        }
+
+        // ===== Custom View Builder =====
+        let vbCurrentStep = 1;
+        let vbFilters = {
+            dateRange: { type: 'all', quarter: null, startDate: null, endDate: null },
+            sentiment: { values: [], logic: 'OR' },
+            region: { values: [], logic: 'OR' },
+            country: { values: [], logic: 'OR' },
+            prTeam: { values: [], logic: 'OR' },
+            lead: { values: [], logic: 'OR' },
+            spotifyTeam: { values: [], logic: 'OR' },
+            icType: { values: [], logic: 'OR' },
+            addToNote: null,
+            brandMilestone: null,
+            search: ''
+        };
+        let vbOverrides = { excludedIds: [], includedIds: [] };
+        let vbMatchingEvents = [];
+        let vbVisibility = 'private';
+        let vbEditingViewId = null;
+
+        function openViewBuilder(editViewId = null) {
+            vbEditingViewId = editViewId;
+            vbCurrentStep = 1;
+            resetVbFilters();
+
+            if (editViewId) {
+                // Load existing view for editing
+                const view = savedViews.find(v => v.id === editViewId);
+                if (view) {
+                    loadViewIntoBuilder(view);
+                }
+            }
+
+            populateVbFilterChips();
+            updateVbStepUI();
+            updateVbMatchCount();
+
+            document.getElementById('viewBuilderOverlay').classList.add('active');
+        }
+
+        function closeViewBuilder() {
+            document.getElementById('viewBuilderOverlay').classList.remove('active');
+            resetVbFilters();
+        }
+
+        function resetVbFilters() {
+            vbFilters = {
+                dateRange: { type: 'all', quarter: null, startDate: null, endDate: null },
+                sentiment: { values: [], logic: 'OR' },
+                region: { values: [], logic: 'OR' },
+                country: { values: [], logic: 'OR' },
+                prTeam: { values: [], logic: 'OR' },
+                lead: { values: [], logic: 'OR' },
+                spotifyTeam: { values: [], logic: 'OR' },
+                icType: { values: [], logic: 'OR' },
+                addToNote: null,
+                brandMilestone: null,
+                search: ''
+            };
+            vbOverrides = { excludedIds: [], includedIds: [] };
+            vbVisibility = 'private';
+            document.getElementById('vbSearchInput').value = '';
+            document.getElementById('vbDateStart').value = '';
+            document.getElementById('vbDateEnd').value = '';
+            document.getElementById('vbViewName').value = '';
+            document.getElementById('vbViewDescription').value = '';
+        }
+
+        function populateVbFilterChips() {
+            // Collect unique values from all events
+            const sentiments = new Set();
+            const regions = new Set();
+            const countries = new Set();
+            const prTeams = new Set();
+            const leads = new Set();
+            const spotifyTeams = new Set();
+            const icTypes = new Set();
+
+            allEvents.forEach(event => {
+                if (event.sentiment) sentiments.add(event.sentiment);
+                event.region?.forEach(r => regions.add(r));
+                event.country?.forEach(c => countries.add(c));
+                event.prTeam?.forEach(p => prTeams.add(p));
+                event.leads?.forEach(l => leads.add(l));
+                event.spotifyTeam?.forEach(s => spotifyTeams.add(s));
+                event.icType?.forEach(i => icTypes.add(i));
+            });
+
+            renderChips('vbSentimentChips', Array.from(sentiments).sort(), 'sentiment');
+            renderChips('vbRegionChips', Array.from(regions).sort(), 'region');
+            renderChips('vbCountryChips', Array.from(countries).sort(), 'country');
+            renderChips('vbPrTeamChips', Array.from(prTeams).sort(), 'prTeam');
+            renderChips('vbLeadChips', Array.from(leads).sort(), 'lead');
+            renderChips('vbSpotifyTeamChips', Array.from(spotifyTeams).sort(), 'spotifyTeam');
+            renderChips('vbIcTypeChips', Array.from(icTypes).sort(), 'icType');
+
+            // Set up event listeners
+            setupVbEventListeners();
+        }
+
+        function renderChips(containerId, values, filterType) {
+            const container = document.getElementById(containerId);
+            if (!container || values.length === 0) {
+                if (container) container.innerHTML = '<span style="color:#666;font-size:12px;">No options available</span>';
+                return;
+            }
+
+            container.innerHTML = values.map(value => `
+                <div class="filter-chip" data-filter="${filterType}" data-value="${escapeHtml(value)}" onclick="toggleVbChip(this)">
+                    ${escapeHtml(value)}
+                </div>
+            `).join('');
+        }
+
+        function setupVbEventListeners() {
+            // Date range presets
+            document.querySelectorAll('#dateRangePresets .filter-chip').forEach(chip => {
+                chip.addEventListener('click', function() {
+                    document.querySelectorAll('#dateRangePresets .filter-chip').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    const dateType = this.dataset.date;
+                    if (dateType === 'all') {
+                        vbFilters.dateRange = { type: 'all', quarter: null, startDate: null, endDate: null };
+                    } else {
+                        vbFilters.dateRange = { type: 'quarter', quarter: dateType, startDate: null, endDate: null };
+                    }
+                    document.getElementById('vbDateStart').value = '';
+                    document.getElementById('vbDateEnd').value = '';
+                    updateVbMatchCount();
+                });
+            });
+
+            // Custom date inputs
+            document.getElementById('vbDateStart').addEventListener('change', handleCustomDateChange);
+            document.getElementById('vbDateEnd').addEventListener('change', handleCustomDateChange);
+
+            // Search input with debounce
+            let searchTimeout;
+            document.getElementById('vbSearchInput').addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    vbFilters.search = this.value;
+                    updateVbMatchCount();
+                }, 200);
+            });
+
+            // Boolean filters
+            document.getElementById('vbAddToNote').addEventListener('click', function() {
+                this.classList.toggle('active');
+                vbFilters.addToNote = this.classList.contains('active') ? true : null;
+                updateVbMatchCount();
+            });
+
+            document.getElementById('vbBrandMilestone').addEventListener('click', function() {
+                this.classList.toggle('active');
+                vbFilters.brandMilestone = this.classList.contains('active') ? true : null;
+                updateVbMatchCount();
+            });
+
+            // Logic toggles
+            document.querySelectorAll('.filter-logic-toggle').forEach(toggle => {
+                toggle.querySelectorAll('.filter-logic-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const filterType = toggle.dataset.filter;
+                        toggle.querySelectorAll('.filter-logic-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        vbFilters[filterType].logic = this.dataset.logic;
+                        updateVbMatchCount();
+                    });
+                });
+            });
+        }
+
+        function handleCustomDateChange() {
+            const startDate = document.getElementById('vbDateStart').value;
+            const endDate = document.getElementById('vbDateEnd').value;
+
+            if (startDate || endDate) {
+                document.querySelectorAll('#dateRangePresets .filter-chip').forEach(c => c.classList.remove('selected'));
+                vbFilters.dateRange = { type: 'custom', quarter: null, startDate, endDate };
+            }
+            updateVbMatchCount();
+        }
+
+        function toggleVbChip(chip) {
+            chip.classList.toggle('selected');
+            const filterType = chip.dataset.filter;
+            const value = chip.dataset.value;
+
+            if (chip.classList.contains('selected')) {
+                if (!vbFilters[filterType].values.includes(value)) {
+                    vbFilters[filterType].values.push(value);
+                }
+            } else {
+                vbFilters[filterType].values = vbFilters[filterType].values.filter(v => v !== value);
+            }
+            updateVbMatchCount();
+        }
+
+        function getVbMatchingEvents() {
+            return allEvents.filter(event => {
+                if (event.title === 'Untitled Event') return false;
+
+                // Date range filter
+                if (vbFilters.dateRange.type !== 'all') {
+                    const eventDate = new Date(event.date + 'T00:00:00');
+
+                    if (vbFilters.dateRange.type === 'quarter') {
+                        const year = 2026;
+                        const quarterMap = {
+                            'Q1': { start: new Date(year, 0, 1), end: new Date(year, 2, 31) },
+                            'Q2': { start: new Date(year, 3, 1), end: new Date(year, 5, 30) },
+                            'Q3': { start: new Date(year, 6, 1), end: new Date(year, 8, 30) },
+                            'Q4': { start: new Date(year, 9, 1), end: new Date(year, 11, 31) }
+                        };
+                        const q = quarterMap[vbFilters.dateRange.quarter];
+                        if (q && (eventDate < q.start || eventDate > q.end)) return false;
+                    } else if (vbFilters.dateRange.type === 'custom') {
+                        if (vbFilters.dateRange.startDate) {
+                            const start = new Date(vbFilters.dateRange.startDate + 'T00:00:00');
+                            if (eventDate < start) return false;
+                        }
+                        if (vbFilters.dateRange.endDate) {
+                            const end = new Date(vbFilters.dateRange.endDate + 'T00:00:00');
+                            if (eventDate > end) return false;
+                        }
+                    }
+                }
+
+                // Search filter
+                if (vbFilters.search && !event.title.toLowerCase().includes(vbFilters.search.toLowerCase())) {
+                    return false;
+                }
+
+                // Boolean filters
+                if (vbFilters.addToNote === true && !event.addToNote) return false;
+                if (vbFilters.brandMilestone === true && !event.brandMilestone) return false;
+
+                // Multi-select filters
+                const multiFilters = ['sentiment', 'region', 'country', 'prTeam', 'lead', 'spotifyTeam', 'icType'];
+                for (const filterType of multiFilters) {
+                    const filter = vbFilters[filterType];
+                    if (filter.values.length === 0) continue;
+
+                    let eventValues = [];
+                    if (filterType === 'sentiment') {
+                        eventValues = event.sentiment ? [event.sentiment] : [];
+                    } else if (filterType === 'lead') {
+                        eventValues = event.leads || [];
+                    } else {
+                        eventValues = event[filterType] || [];
+                    }
+
+                    if (filter.logic === 'OR') {
+                        const matches = filter.values.some(v =>
+                            eventValues.some(ev => ev.toLowerCase().includes(v.toLowerCase()))
+                        );
+                        if (!matches) return false;
+                    } else {
+                        const matches = filter.values.every(v =>
+                            eventValues.some(ev => ev.toLowerCase().includes(v.toLowerCase()))
+                        );
+                        if (!matches) return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
+        function updateVbMatchCount() {
+            vbMatchingEvents = getVbMatchingEvents();
+            document.getElementById('vbMatchCount').textContent = vbMatchingEvents.length;
+        }
+
+        function updateVbStepUI() {
+            // Update step indicators
+            for (let i = 1; i <= 3; i++) {
+                const stepEl = document.getElementById(`vbStep${i}`);
+                stepEl.classList.remove('active', 'completed');
+                if (i < vbCurrentStep) stepEl.classList.add('completed');
+                if (i === vbCurrentStep) stepEl.classList.add('active');
+            }
+
+            // Show/hide content
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`vbStepContent${i}`).style.display = i === vbCurrentStep ? 'block' : 'none';
+            }
+
+            // Update buttons
+            const backBtn = document.getElementById('vbBackBtn');
+            const skipBtn = document.getElementById('vbSkipBtn');
+            const nextBtn = document.getElementById('vbNextBtn');
+
+            backBtn.style.display = vbCurrentStep > 1 ? 'inline-block' : 'none';
+
+            if (vbCurrentStep === 1) {
+                skipBtn.style.display = 'inline-block';
+                nextBtn.textContent = 'Next: Review Events';
+                nextBtn.onclick = viewBuilderNext;
+            } else if (vbCurrentStep === 2) {
+                skipBtn.style.display = 'none';
+                nextBtn.textContent = 'Next: Save View';
+                nextBtn.onclick = viewBuilderNext;
+            } else {
+                skipBtn.style.display = 'none';
+                nextBtn.textContent = 'Save View';
+                nextBtn.onclick = saveCustomView;
+            }
+        }
+
+        function viewBuilderNext() {
+            if (vbCurrentStep === 1) {
+                vbCurrentStep = 2;
+                renderReviewEvents();
+            } else if (vbCurrentStep === 2) {
+                vbCurrentStep = 3;
+                updateFilterSummary();
+            }
+            updateVbStepUI();
+        }
+
+        function viewBuilderBack() {
+            if (vbCurrentStep > 1) {
+                vbCurrentStep--;
+                updateVbStepUI();
+            }
+        }
+
+        function viewBuilderSkipToSave() {
+            vbCurrentStep = 3;
+            updateFilterSummary();
+            updateVbStepUI();
+        }
+
+        function renderReviewEvents() {
+            const container = document.getElementById('vbReviewEvents');
+            const events = vbMatchingEvents;
+
+            // Group by month
+            const grouped = {};
+            events.forEach(event => {
+                const date = new Date(event.date + 'T00:00:00');
+                const monthKey = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+                if (!grouped[monthKey]) grouped[monthKey] = [];
+                grouped[monthKey].push(event);
+            });
+
+            let html = '';
+            Object.keys(grouped).forEach(month => {
+                html += `<div class="review-month-group">
+                    <div class="review-month-header">${month} (${grouped[month].length})</div>`;
+
+                grouped[month].forEach(event => {
+                    const isExcluded = vbOverrides.excludedIds.includes(event.id);
+                    const date = new Date(event.date + 'T00:00:00');
+                    const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    const regionTag = event.region?.[0] || '';
+
+                    html += `
+                        <div class="review-event ${isExcluded ? 'excluded' : ''}" data-id="${event.id}">
+                            <div class="review-event-checkbox ${isExcluded ? '' : 'checked'}" onclick="toggleReviewEvent('${event.id}')">
+                                ${isExcluded ? '' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>'}
+                            </div>
+                            <div class="review-event-info">
+                                <div class="review-event-title">${escapeHtml(event.title)}</div>
+                                <div class="review-event-meta">${dateStr}</div>
+                            </div>
+                            <div class="review-event-tags">
+                                ${regionTag ? `<span class="review-event-tag">${escapeHtml(regionTag)}</span>` : ''}
+                            </div>
+                        </div>`;
+                });
+                html += '</div>';
+            });
+
+            container.innerHTML = html || '<p style="color:#888;text-align:center;padding:40px;">No events match your filters</p>';
+        }
+
+        function toggleReviewEvent(eventId) {
+            if (vbOverrides.excludedIds.includes(eventId)) {
+                vbOverrides.excludedIds = vbOverrides.excludedIds.filter(id => id !== eventId);
+            } else {
+                vbOverrides.excludedIds.push(eventId);
+            }
+            renderReviewEvents();
+            updateVbMatchCount();
+        }
+
+        function updateFilterSummary() {
+            const parts = [];
+
+            if (vbFilters.dateRange.type === 'quarter') {
+                parts.push(vbFilters.dateRange.quarter + ' 2026');
+            } else if (vbFilters.dateRange.type === 'custom') {
+                if (vbFilters.dateRange.startDate && vbFilters.dateRange.endDate) {
+                    parts.push(`${vbFilters.dateRange.startDate} to ${vbFilters.dateRange.endDate}`);
+                }
+            }
+
+            if (vbFilters.sentiment.values.length) parts.push(vbFilters.sentiment.values.join(', '));
+            if (vbFilters.region.values.length) parts.push(vbFilters.region.values.join(', '));
+            if (vbFilters.addToNote) parts.push('Add to Note');
+            if (vbFilters.brandMilestone) parts.push('Brand Milestone');
+
+            const summary = parts.length > 0 ? parts.join(' · ') : 'All events';
+            document.getElementById('vbFilterSummary').textContent = summary;
+        }
+
+        function selectVisibility(visibility) {
+            vbVisibility = visibility;
+            document.querySelectorAll('.visibility-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.visibility === visibility);
+            });
+        }
+
+        function saveCustomView() {
+            const name = document.getElementById('vbViewName').value.trim();
+            if (!name) {
+                document.getElementById('vbViewName').focus();
+                return;
+            }
+
+            const description = document.getElementById('vbViewDescription').value.trim();
+            const setAsDefault = document.getElementById('vbSetDefault').classList.contains('active');
+
+            // Calculate final event count (matching - excluded + pinned)
+            const finalCount = vbMatchingEvents.length - vbOverrides.excludedIds.length + vbOverrides.includedIds.length;
+
+            const view = {
+                id: vbEditingViewId || generateViewId(),
+                name,
+                description,
+                visibility: vbVisibility,
+                shareCode: vbVisibility === 'shared' ? generateShareCode() : null,
+                createdAt: vbEditingViewId ? (savedViews.find(v => v.id === vbEditingViewId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                lastUsedAt: new Date().toISOString(),
+                filters: JSON.parse(JSON.stringify(vbFilters)),
+                overrides: JSON.parse(JSON.stringify(vbOverrides)),
+                eventCount: finalCount
+            };
+
+            if (vbEditingViewId) {
+                // Update existing
+                const idx = savedViews.findIndex(v => v.id === vbEditingViewId);
+                if (idx !== -1) savedViews[idx] = view;
+            } else {
+                // Add new
+                savedViews.push(view);
+            }
+
+            saveSavedViews();
+
+            if (setAsDefault) {
+                localStorage.setItem('commsCalendarDefaultView', view.id);
+            }
+
+            closeViewBuilder();
+            renderSavedViewsList();
+
+            // Show success toast
+            showToast('View saved successfully!');
+        }
+
+        function generateViewId() {
+            return 'view_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function generateShareCode() {
+            return Math.random().toString(36).substr(2, 8).toUpperCase();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('refreshToast');
+            toast.textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        function loadViewIntoBuilder(view) {
+            // Load filters
+            if (view.filters) {
+                vbFilters = JSON.parse(JSON.stringify(view.filters));
+            }
+            if (view.overrides) {
+                vbOverrides = JSON.parse(JSON.stringify(view.overrides));
+            }
+            vbVisibility = view.visibility || 'private';
+
+            // Update UI to reflect loaded filters
+            // This would need to select the appropriate chips, etc.
         }
 
         function shareView() {

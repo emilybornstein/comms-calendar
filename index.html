@@ -6728,11 +6728,16 @@
         }
 
         function shareView() {
+            console.log('[Share Debug] shareView called');
+
             // Check if there's anything to share
             const hasFilters = activeFilters.sentiment.length || activeFilters.region.length ||
                               activeFilters.country.length || activeFilters.prTeam.length ||
                               activeFilters.lead.length || activeFilters.search;
             const hasHidden = hiddenRecords.size > 0;
+
+            console.log('[Share Debug] hasFilters:', hasFilters);
+            console.log('[Share Debug] hasHidden:', hasHidden, 'count:', hiddenRecords.size);
 
             if (!hasFilters && !hasHidden) {
                 // Show modal explaining nothing to share
@@ -6741,11 +6746,16 @@
             }
 
             const url = new URL(window.location.href.split('?')[0]);
+            console.log('[Share Debug] Base URL:', url.toString());
 
             if (hiddenRecords.size > 0) {
                 // Encode hidden records as URL-encoded JSON
                 const hiddenArray = Array.from(hiddenRecords);
-                url.searchParams.set('hidden', JSON.stringify(hiddenArray));
+                console.log('[Share Debug] Hidden array sample:', hiddenArray.slice(0, 5));
+                const jsonString = JSON.stringify(hiddenArray);
+                console.log('[Share Debug] JSON string length:', jsonString.length);
+                console.log('[Share Debug] JSON string first 200 chars:', jsonString.substring(0, 200));
+                url.searchParams.set('hidden', jsonString);
             }
 
             // Encode active filters
@@ -6765,12 +6775,20 @@
                 url.searchParams.set('lead', activeFilters.lead.join(','));
             }
 
-            showShareModal(url.toString(), true);
+            const finalUrl = url.toString();
+            console.log('[Share Debug] Final URL length:', finalUrl.length);
+            console.log('[Share Debug] Final URL:', finalUrl);
+            showShareModal(finalUrl, true);
         }
 
         function showShareModal(shareUrl, hasContent) {
             const visibleCount = allEvents.length - hiddenRecords.size;
             const filterSummary = getFilterSummary();
+
+            // Store URL for copying and escape for safe HTML attribute insertion
+            currentShareUrl = shareUrl;
+            const escapedUrl = shareUrl ? shareUrl.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+            console.log('[Share Debug] showShareModal called, URL length:', shareUrl?.length);
 
             let modalContent = '';
             if (hasContent) {
@@ -6779,7 +6797,7 @@
                     <p class="share-modal-description">Share your current calendar view with others. They'll see the same ${visibleCount} events with your applied filters.</p>
                     ${filterSummary ? `<div class="share-modal-filters"><strong>Active filters:</strong> ${filterSummary}</div>` : ''}
                     <div class="share-modal-url">
-                        <input type="text" id="shareUrlInput" value="${shareUrl}" readonly onclick="this.select()">
+                        <input type="text" id="shareUrlInput" value="${escapedUrl}" readonly onclick="this.select()">
                         <button onclick="copyShareUrl()">Copy</button>
                     </div>
                     <div class="share-modal-btns">
@@ -6814,10 +6832,17 @@
             return parts.join(' • ');
         }
 
+        let currentShareUrl = null; // Store the current share URL for copying
+
         function copyShareUrl() {
             const input = document.getElementById('shareUrlInput');
-            input.select();
-            navigator.clipboard.writeText(input.value).then(() => {
+            const urlToCopy = currentShareUrl || input.value;
+            console.log('[Share Debug] copyShareUrl called');
+            console.log('[Share Debug] URL to copy length:', urlToCopy?.length);
+            console.log('[Share Debug] URL to copy first 100 chars:', urlToCopy?.substring(0, 100));
+
+            navigator.clipboard.writeText(urlToCopy).then(() => {
+                console.log('[Share Debug] URL copied successfully');
                 const btn = input.nextElementSibling;
                 btn.textContent = 'Copied!';
                 btn.style.background = '#1DB954';
@@ -6825,6 +6850,8 @@
                     btn.textContent = 'Copy';
                     btn.style.background = '';
                 }, 2000);
+            }).catch(err => {
+                console.error('[Share Debug] Copy failed:', err);
             });
         }
 
@@ -6836,17 +6863,26 @@
         function loadSharedView() {
             const params = new URLSearchParams(window.location.search);
 
+            console.log('[Share Debug] Full URL:', window.location.href);
+            console.log('[Share Debug] Search params:', window.location.search);
+            console.log('[Share Debug] All params:', Array.from(params.entries()));
+
             // Load hidden records
             if (params.has('hidden')) {
                 try {
                     const hiddenParam = params.get('hidden');
-                    console.log('Loading hidden param:', hiddenParam);
+                    console.log('[Share Debug] Raw hidden param:', hiddenParam);
+                    console.log('[Share Debug] Hidden param length:', hiddenParam?.length);
+                    console.log('[Share Debug] Hidden param first 100 chars:', hiddenParam?.substring(0, 100));
                     const decoded = JSON.parse(hiddenParam);
-                    console.log('Decoded hidden records:', decoded);
+                    console.log('[Share Debug] Decoded hidden records count:', decoded?.length);
+                    console.log('[Share Debug] First 5 decoded records:', decoded?.slice(0, 5));
                     hiddenRecords = new Set(decoded);
                     isSharedView = true;
                 } catch (e) {
-                    console.error('Failed to parse hidden records:', e);
+                    console.error('[Share Debug] Failed to parse hidden records:', e);
+                    console.error('[Share Debug] Error name:', e.name);
+                    console.error('[Share Debug] Error message:', e.message);
                     // Don't let this break the page - just continue without hidden records
                 }
             }

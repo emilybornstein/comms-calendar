@@ -1956,6 +1956,104 @@
             padding: 16px;
         }
 
+        /* Enhanced Saved Views */
+        .saved-views-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .saved-views-sort {
+            display: flex;
+            gap: 4px;
+        }
+
+        .saved-views-sort button {
+            padding: 4px 8px;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #888;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .saved-views-sort button.active {
+            background: #333;
+            color: #fff;
+        }
+
+        .saved-view-item.is-default {
+            border-color: #1DB954;
+            background: rgba(29, 185, 84, 0.1);
+        }
+
+        .saved-view-badges {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .saved-view-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .saved-view-badge.shared {
+            background: #3B82F6;
+            color: #fff;
+        }
+
+        .saved-view-badge.private {
+            background: #444;
+            color: #aaa;
+        }
+
+        .saved-view-badge.default {
+            background: #1DB954;
+            color: #000;
+        }
+
+        .saved-view-badge.count {
+            background: #333;
+            color: #888;
+        }
+
+        .saved-view-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .saved-view-item:hover .saved-view-actions {
+            opacity: 1;
+        }
+
+        .saved-view-action {
+            padding: 4px 6px;
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .saved-view-action:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .saved-view-action.delete:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
         /* Save View Modal */
         .save-view-modal {
             display: none;
@@ -3580,7 +3678,14 @@
 
         <!-- Saved Views Section -->
         <div class="saved-views-section" id="savedViewsSection">
-            <div class="saved-views-title">Saved Views</div>
+            <div class="saved-views-header">
+                <div class="saved-views-title">Saved Views</div>
+                <div class="saved-views-sort">
+                    <button class="active" onclick="sortSavedViews('name')" data-sort="name">A-Z</button>
+                    <button onclick="sortSavedViews('created')" data-sort="created">New</button>
+                    <button onclick="sortSavedViews('used')" data-sort="used">Recent</button>
+                </div>
+            </div>
             <div id="savedViewsList">
                 <!-- Populated dynamically -->
             </div>
@@ -4000,6 +4105,7 @@
         const BASE_ID = 'app8h9Ws9zC9VhZMO';
         const TABLE_ID = 'tblgrCbRgsulVAgW1';
         const TABLE_NAME = 'Global Comms Calendar';
+        const VIEWS_TABLE_NAME = 'Shared Views'; // Table for storing shared custom views
 
         // State
         let currentDate = new Date();
@@ -5335,9 +5441,12 @@
             localStorage.setItem('commsCalendarSavedViews', JSON.stringify(savedViews));
         }
 
+        let savedViewsSort = 'name'; // 'name', 'created', 'used'
+
         function renderSavedViewsList() {
             const container = document.getElementById('savedViewsList');
             const section = document.getElementById('savedViewsSection');
+            const defaultViewId = localStorage.getItem('commsCalendarDefaultView');
 
             if (savedViews.length === 0) {
                 section.style.display = 'none';
@@ -5345,15 +5454,115 @@
             }
 
             section.style.display = 'block';
-            container.innerHTML = savedViews.map((view, idx) => `
-                <div class="saved-view-item" onclick="loadSavedView(${idx})">
+
+            // Sort views
+            let sortedViews = [...savedViews];
+            if (savedViewsSort === 'name') {
+                sortedViews.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (savedViewsSort === 'created') {
+                sortedViews.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+            } else if (savedViewsSort === 'used') {
+                sortedViews.sort((a, b) => new Date(b.lastUsedAt || 0) - new Date(a.lastUsedAt || 0));
+            }
+
+            container.innerHTML = sortedViews.map((view, idx) => {
+                const originalIdx = savedViews.indexOf(view);
+                const isDefault = view.id === defaultViewId;
+                const isShared = view.visibility === 'shared';
+                const filterSummary = getViewFilterSummary(view);
+
+                return `
+                <div class="saved-view-item ${isDefault ? 'is-default' : ''}" onclick="loadSavedView(${originalIdx})">
                     <div class="saved-view-info">
                         <span class="saved-view-name">${escapeHtml(view.name)}</span>
-                        ${view.description ? `<span class="saved-view-description">${escapeHtml(view.description)}</span>` : ''}
+                        ${filterSummary ? `<span class="saved-view-description">${escapeHtml(filterSummary)}</span>` : ''}
+                        <div class="saved-view-badges">
+                            ${isDefault ? '<span class="saved-view-badge default">Default</span>' : ''}
+                            <span class="saved-view-badge ${isShared ? 'shared' : 'private'}">${isShared ? 'Shared' : 'Private'}</span>
+                            <span class="saved-view-badge count">${view.eventCount || '?'} events</span>
+                        </div>
                     </div>
-                    <button class="saved-view-delete" onclick="event.stopPropagation(); deleteSavedView(${idx})" title="Delete view">&times;</button>
-                </div>
-            `).join('');
+                    <div class="saved-view-actions">
+                        <button class="saved-view-action" onclick="event.stopPropagation(); editSavedView(${originalIdx})" title="Edit">✎</button>
+                        <button class="saved-view-action" onclick="event.stopPropagation(); duplicateSavedView(${originalIdx})" title="Duplicate">⧉</button>
+                        ${isShared ? `<button class="saved-view-action" onclick="event.stopPropagation(); copyViewShareLink(${originalIdx})" title="Copy link">🔗</button>` : ''}
+                        <button class="saved-view-action ${isDefault ? '' : ''}" onclick="event.stopPropagation(); toggleDefaultView(${originalIdx})" title="${isDefault ? 'Remove default' : 'Set as default'}">★</button>
+                        <button class="saved-view-action delete" onclick="event.stopPropagation(); deleteSavedView(${originalIdx})" title="Delete">✕</button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function getViewFilterSummary(view) {
+            if (!view.filters) return view.description || '';
+
+            const parts = [];
+            const f = view.filters;
+
+            if (f.dateRange?.type === 'quarter') parts.push(f.dateRange.quarter);
+            if (f.sentiment?.values?.length) parts.push(f.sentiment.values.join(', '));
+            if (f.region?.values?.length) parts.push(f.region.values.join(', '));
+
+            return parts.length > 0 ? parts.join(' · ') : (view.description || '');
+        }
+
+        function sortSavedViews(sortBy) {
+            savedViewsSort = sortBy;
+            document.querySelectorAll('.saved-views-sort button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.sort === sortBy);
+            });
+            renderSavedViewsList();
+        }
+
+        function editSavedView(idx) {
+            const view = savedViews[idx];
+            if (view) {
+                toggleCustomizePanel();
+                openViewBuilder(view.id);
+            }
+        }
+
+        function duplicateSavedView(idx) {
+            const view = savedViews[idx];
+            if (!view) return;
+
+            const newView = JSON.parse(JSON.stringify(view));
+            newView.id = generateViewId();
+            newView.name = view.name + ' (Copy)';
+            newView.createdAt = new Date().toISOString();
+            newView.updatedAt = new Date().toISOString();
+            newView.shareCode = null;
+            newView.visibility = 'private';
+
+            savedViews.push(newView);
+            saveSavedViews();
+            renderSavedViewsList();
+            showToast('View duplicated');
+        }
+
+        function copyViewShareLink(idx) {
+            const view = savedViews[idx];
+            if (!view || !view.shareCode) return;
+
+            const url = `${window.location.origin}${window.location.pathname}?viewCode=${view.shareCode}`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Share link copied!');
+            });
+        }
+
+        function toggleDefaultView(idx) {
+            const view = savedViews[idx];
+            if (!view) return;
+
+            const currentDefault = localStorage.getItem('commsCalendarDefaultView');
+            if (currentDefault === view.id) {
+                localStorage.removeItem('commsCalendarDefaultView');
+                showToast('Default view removed');
+            } else {
+                localStorage.setItem('commsCalendarDefaultView', view.id);
+                showToast('Set as default view');
+            }
+            renderSavedViewsList();
         }
 
         function saveCurrentView() {
@@ -5397,11 +5606,44 @@
             const view = savedViews[idx];
             if (!view) return;
 
-            hiddenRecords = new Set(view.hiddenRecords || []);
-            activeFilters = { ...view.filters } || { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
+            // Handle hidden records - check old format (hiddenRecords) and new format (overrides.excludedIds)
+            if (view.overrides?.excludedIds) {
+                hiddenRecords = new Set(view.overrides.excludedIds);
+            } else if (view.hiddenRecords) {
+                hiddenRecords = new Set(view.hiddenRecords);
+            } else {
+                hiddenRecords = new Set();
+            }
 
-            // Update filter UI
+            // Handle filters - check old format (flat arrays) and new format (values + logic)
+            if (view.filters) {
+                const f = view.filters;
+                activeFilters = {
+                    sentiment: f.sentiment?.values || f.sentiment || [],
+                    region: f.region?.values || f.region || [],
+                    country: f.country?.values || f.country || [],
+                    prTeam: f.prTeam?.values || f.prTeam || [],
+                    lead: f.lead?.values || f.lead || [],
+                    search: f.search || ''
+                };
+            } else {
+                activeFilters = { sentiment: [], region: [], country: [], prTeam: [], lead: [], search: '' };
+            }
+
+            // Update last used timestamp
+            view.lastUsedAt = new Date().toISOString();
+            saveSavedViews();
+
+            // Update filter UI pills to show active state
             document.querySelectorAll('.filter-pill.active').forEach(p => p.classList.remove('active'));
+            Object.keys(activeFilters).forEach(filterType => {
+                if (Array.isArray(activeFilters[filterType])) {
+                    activeFilters[filterType].forEach(value => {
+                        const pill = document.querySelector(`.filter-pill[data-value="${value}"]`);
+                        if (pill) pill.classList.add('active');
+                    });
+                }
+            });
 
             // Show active view banner
             document.getElementById('activeViewName').textContent = view.name;
@@ -6004,7 +6246,7 @@
             });
         }
 
-        function saveCustomView() {
+        async function saveCustomView() {
             const name = document.getElementById('vbViewName').value.trim();
             if (!name) {
                 document.getElementById('vbViewName').focus();
@@ -6030,6 +6272,19 @@
                 overrides: JSON.parse(JSON.stringify(vbOverrides)),
                 eventCount: finalCount
             };
+
+            // If shared, save to Airtable
+            if (vbVisibility === 'shared') {
+                showToast('Saving shared view...');
+                const airtableId = await saveSharedViewToAirtable(view);
+                if (airtableId) {
+                    view.airtableId = airtableId;
+                } else {
+                    showToast('Failed to save shared view. Saving locally instead.');
+                    view.visibility = 'private';
+                    view.shareCode = null;
+                }
+            }
 
             if (vbEditingViewId) {
                 // Update existing
@@ -6080,6 +6335,195 @@
 
             // Update UI to reflect loaded filters
             // This would need to select the appropriate chips, etc.
+        }
+
+        // ===== Airtable Backend for Shared Views =====
+        // Requires a "Shared Views" table in Airtable with fields:
+        // - Name (Single line text)
+        // - ShareCode (Single line text)
+        // - ViewConfig (Long text - stores JSON)
+        // - CreatedAt (Date)
+
+        async function saveSharedViewToAirtable(view) {
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(VIEWS_TABLE_NAME)}`;
+
+            const viewConfig = JSON.stringify({
+                name: view.name,
+                description: view.description,
+                filters: view.filters,
+                overrides: view.overrides,
+                eventCount: view.eventCount
+            });
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fields: {
+                            'Name': view.name,
+                            'ShareCode': view.shareCode,
+                            'ViewConfig': viewConfig,
+                            'CreatedAt': new Date().toISOString().split('T')[0]
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to save shared view to Airtable');
+                    return false;
+                }
+
+                const data = await response.json();
+                return data.id; // Return Airtable record ID
+            } catch (error) {
+                console.error('Error saving shared view:', error);
+                return false;
+            }
+        }
+
+        async function loadSharedViewFromAirtable(shareCode) {
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(VIEWS_TABLE_NAME)}?filterByFormula={ShareCode}="${shareCode}"`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_TOKEN}`
+                    }
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to load shared view from Airtable');
+                    return null;
+                }
+
+                const data = await response.json();
+                if (data.records && data.records.length > 0) {
+                    const record = data.records[0];
+                    const viewConfig = JSON.parse(record.fields['ViewConfig']);
+                    return {
+                        id: record.id,
+                        shareCode: record.fields['ShareCode'],
+                        ...viewConfig
+                    };
+                }
+                return null;
+            } catch (error) {
+                console.error('Error loading shared view:', error);
+                return null;
+            }
+        }
+
+        async function deleteSharedViewFromAirtable(recordId) {
+            const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(VIEWS_TABLE_NAME)}/${recordId}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_TOKEN}`
+                    }
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('Error deleting shared view:', error);
+                return false;
+            }
+        }
+
+        // Check for shared view code in URL on load
+        async function checkForSharedViewCode() {
+            const params = new URLSearchParams(window.location.search);
+            const viewCode = params.get('viewCode');
+
+            if (viewCode) {
+                showToast('Loading shared view...');
+                const view = await loadSharedViewFromAirtable(viewCode);
+
+                if (view) {
+                    // Apply the shared view
+                    applyLoadedView(view);
+                    showSharedViewImportBanner(view);
+                } else {
+                    showToast('Shared view not found');
+                }
+
+                // Clean up URL
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+
+        function applyLoadedView(view) {
+            // Apply filters from the view
+            if (view.filters) {
+                // Reset active filters and apply view filters
+                activeFilters = {
+                    sentiment: view.filters.sentiment?.values || [],
+                    region: view.filters.region?.values || [],
+                    country: view.filters.country?.values || [],
+                    prTeam: view.filters.prTeam?.values || [],
+                    lead: view.filters.lead?.values || [],
+                    search: view.filters.search || ''
+                };
+            }
+
+            // Apply overrides
+            if (view.overrides?.excludedIds) {
+                view.overrides.excludedIds.forEach(id => hiddenRecords.add(id));
+            }
+
+            isSharedView = true;
+            applyFilters();
+        }
+
+        function showSharedViewImportBanner(view) {
+            const banner = document.createElement('div');
+            banner.className = 'shared-view-banner';
+            banner.id = 'sharedViewBanner';
+            banner.innerHTML = `
+                <span>You're viewing "${escapeHtml(view.name)}" - a shared calendar view</span>
+                <div>
+                    <button class="add-to-views" onclick="saveSharedViewLocally()">+ Save to My Views</button>
+                    <button onclick="clearSharedView()">View All Events</button>
+                </div>
+            `;
+            const mainContent = document.getElementById('mainContent');
+            const header = mainContent.querySelector('.header');
+            mainContent.insertBefore(banner, header);
+
+            // Store for saving
+            window.currentImportedView = view;
+        }
+
+        function saveSharedViewLocally() {
+            if (!window.currentImportedView) return;
+
+            const view = window.currentImportedView;
+            const localView = {
+                id: generateViewId(),
+                name: view.name,
+                description: view.description || '',
+                visibility: 'private',
+                shareCode: null,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                lastUsedAt: new Date().toISOString(),
+                filters: view.filters,
+                overrides: view.overrides,
+                eventCount: view.eventCount,
+                isImported: true
+            };
+
+            savedViews.push(localView);
+            saveSavedViews();
+            showToast('View saved to My Views');
+
+            // Remove banner
+            const banner = document.getElementById('sharedViewBanner');
+            if (banner) banner.remove();
         }
 
         function shareView() {
@@ -6310,14 +6754,34 @@
             initializeCalendar();
         }
 
-        function initializeCalendar() {
+        async function initializeCalendar() {
             loadSharedView();
             loadSavedSettings();
+            loadSavedViews();
             initKeyboardNav();
-            fetchEvents();
+
+            await fetchEvents();
+
+            // Check for shared view code in URL (from Airtable-backed sharing)
+            await checkForSharedViewCode();
+
+            // Load default view if set and not already viewing a shared view
+            if (!isSharedView) {
+                loadDefaultView();
+            }
 
             // Auto-refresh every 30 seconds
             setInterval(fetchEvents, 30000);
+        }
+
+        function loadDefaultView() {
+            const defaultViewId = localStorage.getItem('commsCalendarDefaultView');
+            if (!defaultViewId) return;
+
+            const viewIdx = savedViews.findIndex(v => v.id === defaultViewId);
+            if (viewIdx !== -1) {
+                loadSavedView(viewIdx);
+            }
         }
 
         // Initialize - check authentication

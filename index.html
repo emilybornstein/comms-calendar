@@ -3418,33 +3418,10 @@
             </div>
             <h2>Global Comms Calendar</h2>
             <p>Enter password to continue</p>
-            <form id="passwordForm">
+            <form id="passwordForm" onsubmit="return handlePasswordSubmit(event)">
                 <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password" autofocus>
-                <button type="button" onclick="checkPassword()">Enter</button>
+                <button type="submit">Enter</button>
             </form>
-            <script>
-                document.getElementById('passwordInput').addEventListener('keyup', function(e) {
-                    if (e.key === 'Enter') {
-                        checkPassword();
-                    }
-                });
-                function checkPassword() {
-                    var pwd = document.getElementById('passwordInput').value;
-                    if (pwd === 'spotifycomms2026') {
-                        sessionStorage.setItem('calendarAuth', 'true');
-                        document.getElementById('passwordScreen').style.display = 'none';
-                        document.getElementById('mainContent').style.display = 'block';
-                        document.getElementById('mainContent').classList.add('visible');
-                        if (typeof initializeCalendar === 'function') initializeCalendar();
-                    } else {
-                        document.getElementById('passwordInput').value = '';
-                        document.getElementById('passwordInput').style.borderColor = '#ff4444';
-                        setTimeout(function() {
-                            document.getElementById('passwordInput').style.borderColor = '';
-                        }, 300);
-                    }
-                }
-            </script>
         </div>
     </div>
 
@@ -6976,7 +6953,8 @@
         }
 
         function showMainContent() {
-            document.getElementById('passwordScreen').classList.add('hidden');
+            document.getElementById('passwordScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
             document.getElementById('mainContent').classList.add('visible');
             initializeCalendar();
         }
